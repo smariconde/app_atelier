@@ -1,6 +1,6 @@
 # 🛣️ AppAtelier — Roadmap
 
-This is a living document. Last updated: 2026-04-30.
+This is a living document. Last updated: 2026-05-01.
 
 The goal of this project is to make the paradigm Naval describes real and accessible: **anyone should be able to describe what they want in plain language and end up with a real, installable app built exactly for them**. The roadmap prioritizes the things that close the gap between "I have an idea" and "the app is on my phone".
 
@@ -58,13 +58,13 @@ Milestones have concrete "done" criteria. Anything not on this list is not on th
 - [x] All 9 agent definitions:
   - [x] `product-lead`, `tech-lead`, `design-lead` (the leads)
   - [x] `app-architect`, `app-builder`, `pwa-specialist`, `db-migrator`, `ui-designer` (the specialists)
-  - [ ] `deployer`, `qa-auditor` _(v0.4)_
+  - [x] `deployer`, `qa-auditor` _(shipped v0.4)_
 - [x] Core skills:
   - [x] `/create-app` — full lifecycle
   - [x] `/modify-app` — safely edits existing apps (tech-lead gate)
   - [x] `/theme-app` — palette, icon, typography via design-lead + ui-designer
   - [x] `/architecture` — knowledge-only
-  - [ ] `/deploy-app`, `/pwa-audit` _(v0.4)_
+  - [x] `/deploy-app`, `/pwa-audit` _(shipped v0.4)_
   - [ ] `/add-mcp` _(v0.6)_
 - [x] Claude Code hooks (`.claude/settings.json`):
   - [x] PreCommit: `pnpm doctor` — blocks git commit on failures
@@ -77,39 +77,43 @@ Milestones have concrete "done" criteria. Anything not on this list is not on th
 
 ---
 
-## 📋 v0.4 — Production Deploy Automation
+## ✅ v0.4 — Production Deploy Automation _(shipped 2026-05-01)_
 
-**Goal**: From local dev to `*.yourdomain.com` should be a single command + one-time DNS setup. No Vercel dashboard clicking.
+**Goal**: From local dev to `*.yourdomain.com` should be a single skill invocation + one-time DNS setup.
 
-The deployment model is: **one Vercel project, wildcard DNS, middleware routing**. The `deployer` agent and `pnpm ship` script automate the initial setup; after that, every new app is live at its subdomain on the next `vercel --prod` with zero extra configuration.
+The deployment model is: **one Vercel project, wildcard DNS, middleware routing**. The `deployer` agent automates the initial setup; after that, every new app is live at its subdomain on the next `/deploy-app` with zero extra configuration.
 
-- [ ] `pnpm ship` script for first-time deploy:
-  - [ ] Creates the Vercel project (via Vercel CLI) if it doesn't exist
-  - [ ] Sets all env vars from `.env.production`
-  - [ ] Triggers deploy
-  - [ ] Prints the wildcard DNS instructions for the user's domain
-  - [ ] Validates SSL and subdomain routing after deploy
-- [ ] DNS guide in docs covering Cloudflare, Namecheap, Route 53 (just one wildcard record — `*.yourdomain.com → cname.vercel-dns.com`)
-- [ ] Vercel dashboard guide: how to add `*.yourdomain.com` as a custom domain (one step, covers all current and future apps)
-- [ ] Self-hosted alternative: Docker Compose + Caddy config for wildcard subdomain routing (for people who want zero Vercel dependency)
-- [ ] `deployer` agent knows this model and never tries to create per-app Vercel projects
+- [x] `deployer` agent: preflight (doctor + build) → `vercel --prod` → wildcard DNS instructions
+- [x] `qa-auditor` agent: static PWA manifest checks + Lighthouse audit (≥90 threshold per category)
+- [x] `/deploy-app` skill: gates — preflight confirmation → deploy → DNS guide
+- [x] `/pwa-audit` skill: static-only or full Lighthouse with `--url https://yourdomain.com`
+- [x] `pnpm audit` script: programmatic Lighthouse via `@lhci/cli`, audits all app subdomains
+- [x] `vercel.json`: minimal single-project config (middleware handles subdomain routing)
+- [x] `lighthouserc.js`: LHCI thresholds (≥90 all categories: Performance, A11y, Best Practices, SEO, PWA)
+- [x] `.gitignore`: excludes `.lighthouseci/` output
+- [ ] DNS guide in docs (Cloudflare, Namecheap, Route 53)
+- [ ] Self-hosted alternative: Docker Compose + Caddy for wildcard subdomain routing
 
-**Definition of done**: from a fresh clone to a live `hub.yourdomain.com` with all example apps available at their subdomains and installable on mobile, following only the documented steps, in under 15 minutes.
+**Definition of done**: from a fresh clone to a live `yourdomain.com` with all apps at their subdomains and installable on mobile, using only `/deploy-app` + the generated DNS instructions, in under 15 minutes.
 
 ---
 
-## 📋 v0.5 — Backend Adapters
+## ✅ v0.5 — Backend Adapters _(shipped 2026-05-01)_
 
 **Goal**: Backend-agnostic for real. Same code runs on any supported backend with one env variable.
 
-- [ ] Postgres adapter (Supabase, Neon, Vercel Postgres) — stable
-- [ ] Turso adapter — stable
-- [ ] Cloudflare D1 adapter — stable
-- [ ] MySQL adapter (PlanetScale) — stable
-- [ ] `pnpm db:migrate` runs migrations across all apps in dependency order
-- [ ] `pnpm db:reset` for local dev
-- [ ] Docs page per adapter with end-to-end setup guide
-- [ ] Cross-subdomain SSO works on all adapters
+- [x] Postgres adapter (Supabase, Neon, Vercel Postgres) — stable
+- [x] Turso adapter — stable
+- [x] Cloudflare D1 adapter — stable
+- [x] MySQL adapter (PlanetScale) — stable
+- [x] `pnpm db:migrate` runs migrations across all apps (drizzle-kit generate + migrate)
+- [x] `pnpm db:reset` for local dev (adapter-aware, --force gate for postgres/mysql)
+- [x] Docs page per adapter with end-to-end setup guide (`docs/adapters/*.md`)
+- [x] Cross-subdomain SSO works on all adapters (dynamic `provider` in Better Auth)
+- [x] `@hub/db` exports dialect-agnostic schema helpers (`table`, `text`, `integer`, `boolean`, `timestamp`)
+- [x] `drizzle.config.ts` auto-discovers all `apps/*/db/schema.ts` — no manual table registration
+- [x] `pnpm doctor` validates adapter config (`DB_ADAPTER`, `DATABASE_URL`, tokens)
+- [x] `pnpm db:generate` and `pnpm db:studio` scripts added
 
 **Definition of done**: switch from SQLite to Supabase to Turso by changing only `.env`, no code edits, all apps work identically including auth.
 

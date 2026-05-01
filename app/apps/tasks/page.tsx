@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { getDb } from '@hub/db'
 import { tasks } from '../../../apps/tasks/db/schema'
-import { eq, sql, asc, desc } from 'drizzle-orm'
+import { eq, sql, asc } from 'drizzle-orm'
 import { createTask, toggleTask, deleteTask } from './actions'
-import { DeleteButton } from './delete-button'
+import { AppContainer, PageHeader, FormCard, ItemCard, EmptyState, DeleteButton } from '@hub/ui'
 
 async function getTasks() {
   try {
@@ -39,69 +39,61 @@ export default async function TasksPage() {
   const incomplete = allTasks.filter((t) => !t.completed).length
 
   return (
-    <main className="min-h-screen bg-zinc-950 p-6 max-w-2xl mx-auto">
-      <header className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Tasks</h1>
-          <p className="text-zinc-400 text-sm mt-1">
-            {incomplete} incomplete · {allTasks.length - incomplete} done
-          </p>
-        </div>
-      </header>
+    <AppContainer>
+      <PageHeader
+        title="Tasks"
+        subtitle={`${incomplete} incomplete · ${allTasks.length - incomplete} done`}
+      />
 
       {/* Create form */}
-      <form action={createTask} className="mb-8 bg-zinc-900 rounded-xl p-4 border border-zinc-800 space-y-3">
-        <input
-          name="title"
-          placeholder="Task title"
-          className="w-full bg-transparent text-white placeholder-zinc-500 text-lg font-medium outline-none"
-          required
-        />
-        <textarea
-          name="description"
-          placeholder="Description (optional)"
-          rows={2}
-          className="w-full bg-transparent text-zinc-300 placeholder-zinc-600 text-sm outline-none resize-none"
-        />
-        <div className="flex items-center gap-3">
-          <select
-            name="priority"
-            defaultValue="medium"
-            className="bg-zinc-800 text-zinc-200 text-sm rounded-lg px-3 py-1.5 outline-none border border-zinc-700"
-          >
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
+      <form action={createTask} className="mb-8">
+        <FormCard className="space-y-3">
           <input
-            name="dueDate"
-            type="date"
-            className="bg-zinc-800 text-zinc-200 text-sm rounded-lg px-3 py-1.5 outline-none border border-zinc-700"
+            name="title"
+            placeholder="Task title"
+            className="w-full bg-transparent text-white placeholder-zinc-500 text-lg font-medium outline-none"
+            required
           />
-        </div>
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
-          >
-            Add Task
-          </button>
-        </div>
+          <textarea
+            name="description"
+            placeholder="Description (optional)"
+            rows={2}
+            className="w-full bg-transparent text-zinc-300 placeholder-zinc-600 text-sm outline-none resize-none"
+          />
+          <div className="flex items-center gap-3">
+            <select
+              name="priority"
+              defaultValue="medium"
+              className="bg-zinc-800 text-zinc-200 text-sm rounded-lg px-3 py-1.5 outline-none border border-zinc-700"
+            >
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <input
+              name="dueDate"
+              type="date"
+              className="bg-zinc-800 text-zinc-200 text-sm rounded-lg px-3 py-1.5 outline-none border border-zinc-700"
+            />
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
+            >
+              Add Task
+            </button>
+          </div>
+        </FormCard>
       </form>
 
       {/* Tasks list */}
       {allTasks.length === 0 ? (
-        <div className="text-center py-16 text-zinc-600">
-          <p className="text-lg">No tasks yet</p>
-          <p className="text-sm mt-1">Create your first task above</p>
-        </div>
+        <EmptyState heading="No tasks yet" subtext="Create your first task above" />
       ) : (
         <ul className="space-y-3">
           {allTasks.map((task) => (
-            <li
-              key={task.id}
-              className={`group bg-zinc-900 border border-zinc-800 rounded-xl p-4 transition-colors ${task.completed ? 'opacity-60' : ''}`}
-            >
+            <ItemCard key={task.id} className={`group ${task.completed ? 'opacity-60' : ''}`}>
               <div className="flex items-start gap-3">
                 <form action={toggleTask.bind(null, task.id, !task.completed)} className="mt-0.5">
                   <button
@@ -138,13 +130,16 @@ export default async function TasksPage() {
                   </Link>
                 </div>
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <DeleteButton formAction={deleteTask.bind(null, task.id)} />
+                  <DeleteButton
+                    formAction={deleteTask.bind(null, task.id)}
+                    confirmMessage="Delete this task?"
+                  />
                 </div>
               </div>
-            </li>
+            </ItemCard>
           ))}
         </ul>
       )}
-    </main>
+    </AppContainer>
   )
 }

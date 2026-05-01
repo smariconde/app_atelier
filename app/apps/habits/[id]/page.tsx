@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { getDb } from '@hub/db'
 import { habits, entries } from '../../../../apps/habits/db/schema'
 import { eq } from 'drizzle-orm'
 import { updateHabit, deleteHabit } from '../actions'
-import { DeleteButton } from '../delete-button'
+import { AppContainer, PageHeader, DeleteButton } from '@hub/ui'
 
 function formatDate(d: Date): string {
   return d.toISOString().split('T')[0]
@@ -56,15 +55,8 @@ export default async function HabitPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 p-6 max-w-2xl mx-auto">
-      <div className="mb-6 flex items-center gap-3">
-        <Link
-          href="/apps/habits"
-          className="text-zinc-400 hover:text-white transition-colors text-sm"
-        >
-          ← Back
-        </Link>
-      </div>
+    <AppContainer>
+      <PageHeader backHref="/apps/habits" />
 
       <form action={updateHabitWithId} className="space-y-4" id="edit-form">
         <div
@@ -118,7 +110,10 @@ export default async function HabitPage({ params }: { params: Promise<{ id: stri
       </form>
 
       <div className="flex items-center justify-between pt-4 border-t border-zinc-800 mt-4">
-        <DeleteButton formAction={deleteHabit.bind(null, id)} />
+        <DeleteButton
+          formAction={deleteHabit.bind(null, id)}
+          confirmMessage="Delete this habit and all its entries?"
+        />
         <button
           type="submit"
           form="edit-form"
@@ -128,6 +123,6 @@ export default async function HabitPage({ params }: { params: Promise<{ id: stri
           Save
         </button>
       </div>
-    </main>
+    </AppContainer>
   )
 }

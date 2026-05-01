@@ -17,6 +17,8 @@ cn('px-4 py-2', isActive && 'bg-primary', className)
 
 ## Available components
 
+**Primitives** (shadcn/ui-style):
+
 | Component | File |
 |---|---|
 | `Button` | `components/button.tsx` — variants: default, destructive, outline, secondary, ghost, link |
@@ -24,6 +26,17 @@ cn('px-4 py-2', isActive && 'bg-primary', className)
 | `Input` | `components/input.tsx` |
 | `Textarea` | `components/textarea.tsx` |
 | `Badge` | `components/badge.tsx` — variants: default, secondary, destructive, outline |
+
+**App layout components** (use in every app page):
+
+| Component | Props | Purpose |
+|---|---|---|
+| `AppContainer` | `as?` (`'main'`\|`'div'`), `className?` | Page wrapper — `min-h-screen bg-zinc-950 p-6 max-w-2xl mx-auto` |
+| `PageHeader` | `title?`, `subtitle?`, `backHref?`, `backLabel?`, `action?` | Title block or back navigation |
+| `FormCard` | `className?` | Create/edit form container — `bg-zinc-900 rounded-xl p-4 border border-zinc-800` |
+| `ItemCard` | `as?` (`'li'`\|`'div'`), `className?` | List item card with hover state |
+| `EmptyState` | `heading`, `subtext?` | Empty list placeholder |
+| `DeleteButton` | `formAction`, `confirmMessage?`, `label?` | Delete with confirm dialog (`'use client'`) |
 
 ## Adding a new component
 

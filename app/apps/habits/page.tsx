@@ -3,6 +3,7 @@ import { getDb } from '@hub/db'
 import { habits, entries } from '../../../apps/habits/db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { createHabit, toggleEntry } from './actions'
+import { AppContainer, PageHeader, FormCard, ItemCard, EmptyState } from '@hub/ui'
 
 function formatDate(d: Date): string {
   return d.toISOString().split('T')[0]
@@ -67,67 +68,56 @@ export default async function HabitsPage() {
   const today = getToday()
 
   return (
-    <main className="min-h-screen bg-zinc-950 p-6 max-w-2xl mx-auto">
-      <header className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Habits</h1>
-          <p className="text-zinc-400 text-sm mt-1">
-            {allHabits.length} habit{allHabits.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-      </header>
+    <AppContainer>
+      <PageHeader
+        title="Habits"
+        subtitle={`${allHabits.length} habit${allHabits.length !== 1 ? 's' : ''}`}
+      />
 
       {/* Create form */}
-      <form
-        action={createHabit}
-        className="mb-8 bg-zinc-900 rounded-xl p-4 border border-zinc-800"
-      >
-        <input
-          name="name"
-          placeholder="Habit name"
-          className="w-full bg-transparent text-white placeholder-zinc-500 text-lg font-medium outline-none mb-2"
-          required
-        />
-        <input
-          name="description"
-          placeholder="Description (optional)"
-          className="w-full bg-transparent text-zinc-300 placeholder-zinc-600 text-sm outline-none mb-3"
-        />
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <label htmlFor="color" className="text-zinc-400 text-sm">
-              Color
-            </label>
-            <input
-              id="color"
-              name="color"
-              type="color"
-              defaultValue="#F43F5E"
-              className="w-8 h-8 rounded cursor-pointer bg-transparent border-0"
-            />
+      <form action={createHabit} className="mb-8">
+        <FormCard>
+          <input
+            name="name"
+            placeholder="Habit name"
+            className="w-full bg-transparent text-white placeholder-zinc-500 text-lg font-medium outline-none mb-2"
+            required
+          />
+          <input
+            name="description"
+            placeholder="Description (optional)"
+            className="w-full bg-transparent text-zinc-300 placeholder-zinc-600 text-sm outline-none mb-3"
+          />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <label htmlFor="color" className="text-zinc-400 text-sm">
+                Color
+              </label>
+              <input
+                id="color"
+                name="color"
+                type="color"
+                defaultValue="#F43F5E"
+                className="w-8 h-8 rounded cursor-pointer bg-transparent border-0"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-rose-500 hover:bg-rose-400 text-zinc-950 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
+            >
+              Add Habit
+            </button>
           </div>
-          <button
-            type="submit"
-            className="bg-rose-500 hover:bg-rose-400 text-zinc-950 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
-          >
-            Add Habit
-          </button>
-        </div>
+        </FormCard>
       </form>
 
       {/* Habits list */}
       {allHabits.length === 0 ? (
-        <div className="text-center py-16 text-zinc-600">
-          <p className="text-lg">No habits yet</p>
-          <p className="text-sm mt-1">Create your first habit above</p>
-        </div>
+        <EmptyState heading="No habits yet" subtext="Create your first habit above" />
       ) : (
         <ul className="space-y-3">
           {allHabits.map((habit) => (
-            <li
-              key={habit.id}
-              className="flex items-center gap-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl p-4 transition-colors"
-            >
+            <ItemCard key={habit.id} className="flex items-center gap-4">
               <div
                 className="w-3 h-3 rounded-full shrink-0"
                 style={{ backgroundColor: habit.color }}
@@ -180,10 +170,10 @@ export default async function HabitsPage() {
                   </button>
                 </form>
               </div>
-            </li>
+            </ItemCard>
           ))}
         </ul>
       )}
-    </main>
+    </AppContainer>
   )
 }

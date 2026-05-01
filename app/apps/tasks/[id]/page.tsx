@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { getDb } from '@hub/db'
 import { tasks } from '../../../../apps/tasks/db/schema'
 import { eq } from 'drizzle-orm'
 import { updateTask, deleteTask } from '../actions'
-import { DeleteButton } from '../delete-button'
+import { AppContainer, PageHeader, DeleteButton } from '@hub/ui'
 
 async function getTask(id: string) {
   try {
@@ -29,12 +28,8 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
     : ''
 
   return (
-    <main className="min-h-screen bg-zinc-950 p-6 max-w-2xl mx-auto">
-      <div className="mb-6 flex items-center gap-3">
-        <Link href="/apps/tasks" className="text-zinc-400 hover:text-white transition-colors text-sm">
-          ← Back
-        </Link>
-      </div>
+    <AppContainer>
+      <PageHeader backHref="/apps/tasks" />
 
       <form id="edit-task" action={updateTaskWithId} className="space-y-4">
         <input
@@ -78,7 +73,10 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
           </label>
         </div>
         <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
-          <DeleteButton formAction={deleteTask.bind(null, id)} />
+          <DeleteButton
+            formAction={deleteTask.bind(null, id)}
+            confirmMessage="Delete this task?"
+          />
           <button
             form="edit-task"
             type="submit"
@@ -88,6 +86,6 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
           </button>
         </div>
       </form>
-    </main>
+    </AppContainer>
   )
 }

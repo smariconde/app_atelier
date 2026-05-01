@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import fs from 'fs-extra'
 import path from 'path'
 
@@ -104,6 +105,35 @@ function fixHubPage(appDir: string): boolean {
 
 console.log(`Running doctor checks${fixMode ? ' (--fix mode)' : ''}...\n`)
 
+// ─── Adapter validation ───────────────────────────────────────────────────────
+const validAdapters = ['sqlite', 'turso', 'postgres', 'mysql', 'd1']
+const adapter = process.env.DB_ADAPTER ?? 'sqlite'
+
+console.log('Database adapter:')
+check(validAdapters.includes(adapter), `DB_ADAPTER="${adapter}" is valid (${validAdapters.join(' | ')})`)
+
+if (adapter === 'turso') {
+  const url = process.env.DATABASE_URL ?? ''
+  check(
+    url.startsWith('libsql://') || url.startsWith('libsql+ws://') || url.startsWith('file:'),
+    'DATABASE_URL starts with libsql:// for turso adapter',
+  )
+  check(!!process.env.DATABASE_AUTH_TOKEN, 'DATABASE_AUTH_TOKEN is set for turso adapter')
+} else if (adapter === 'postgres') {
+  const url = process.env.DATABASE_URL ?? ''
+  check(
+    url.startsWith('postgresql://') || url.startsWith('postgres://'),
+    'DATABASE_URL starts with postgresql:// for postgres adapter',
+  )
+} else if (adapter === 'mysql') {
+  const url = process.env.DATABASE_URL ?? ''
+  check(url.startsWith('mysql://'), 'DATABASE_URL starts with mysql:// for mysql adapter')
+} else if (adapter === 'd1') {
+  check(fs.existsSync(path.join(root, 'wrangler.toml')), 'wrangler.toml exists for d1 adapter')
+}
+check(fs.existsSync(path.join(root, 'drizzle.config.ts')), 'drizzle.config.ts exists')
+
+
 console.log('Packages:')
 check(fs.existsSync(path.join(root, 'packages/core/src/index.ts')), '@hub/core exists')
 check(fs.existsSync(path.join(root, 'packages/db/src/index.ts')), '@hub/db exists')
@@ -120,8 +150,13 @@ check(fs.existsSync(path.join(root, '.env.example')), '.env.example')
 
 console.log('\nScaffold:')
 check(
-  !fs.existsSync(path.join(root, 'apps/_template/node_modules')),
-  'apps/_template/node_modules is clean',
+  (() => {
+    const nm = path.join(root, 'apps/_template/node_modules')
+    if (!fs.existsSync(nm)) return true
+    // pnpm workspace creates @hub/* symlinks here — that's expected and fine
+    return fs.readdirSync(nm).every((d) => d.startsWith('@') || d.startsWith('.'))
+  })(),
+  'apps/_template/node_modules is clean (only workspace links allowed)',
 )
 
 console.log('\nHub:')
@@ -169,16 +204,11 @@ if (fs.existsSync(appsDir)) {
 
     const schemaPath = path.join(appsDir, appDir, 'db/schema.ts')
     if (fs.existsSync(schemaPath)) {
-      const manifestAppContent = fs.readFileSync(path.join(appsDir, appDir, 'manifest.ts'), 'utf-8')
-      const prefixMatch = manifestAppContent.match(/tablePrefix:\s*['"]([^'"]+)['"]/)
-      const tablePrefix = prefixMatch?.[1]
-      if (tablePrefix) {
-        const dbSetupContent = fs.readFileSync(path.join(root, 'scripts/db-setup.ts'), 'utf-8')
-        check(
-          dbSetupContent.includes(`CREATE TABLE IF NOT EXISTS ${tablePrefix}`),
-          `${appDir} has CREATE TABLE in scripts/db-setup.ts`,
-        )
-      }
+      const schemaContent = fs.readFileSync(schemaPath, 'utf-8')
+      check(
+        schemaContent.includes("from '@hub/db'"),
+        `${appDir}/db/schema.ts imports from '@hub/db' (dialect-agnostic)`,
+      )
     }
   }
 }

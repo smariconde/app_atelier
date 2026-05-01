@@ -1,6 +1,6 @@
 # @hub/db
 
-Drizzle ORM wrapper with a pluggable adapter. Only SQLite is implemented; other adapters are planned for v0.5.
+Drizzle ORM wrapper with a pluggable adapter. Switch backends by changing `DB_ADAPTER` in `.env` — no code changes needed.
 
 ## Usage
 
@@ -11,38 +11,58 @@ const db = getDb()
 const rows = await db.select().from(myTable)
 ```
 
-`getDb()` is a singleton — one connection per process.
+`getDb()` is a singleton — one connection per process (except D1, which requires a binding per request).
 
 ## DB_ADAPTER env var
 
-| Value | Backend | Status |
+| Value | Backend | Driver |
 |---|---|---|
-| `sqlite` (default) | `better-sqlite3`, local file | v0.3 ✓ |
-| `turso` | Turso (libSQL) | v0.5 |
-| `postgres` | Supabase / Neon / Vercel | v0.5 |
-| `d1` | Cloudflare D1 | v0.5 |
+| `sqlite` (default) | `better-sqlite3`, local file | — |
+| `turso` | Turso (libSQL) | `@libsql/client` |
+| `postgres` | Supabase / Neon / Vercel Postgres | `postgres` (postgres.js) |
+| `mysql` | PlanetScale / Railway | `mysql2` |
+| `d1` | Cloudflare D1 (CF Pages only) | CF Worker binding |
 
-Switching adapters requires only changing `.env`, never code.
+See `docs/adapters/<name>.md` for per-adapter setup guides.
 
 ## Schema conventions
 
-1. **Import** from `drizzle-orm/sqlite-core` (will change per adapter in v0.5)
-2. **Table names** must start with the app's `tablePrefix` from its manifest
-3. **IDs** use `@paralleldrive/cuid2` via `$defaultFn(() => createId())`
-4. **Timestamps** use `integer('col', { mode: 'timestamp' }).$defaultFn(() => new Date())`
+App schemas import dialect-agnostic helpers from `@hub/db`:
 
 ```typescript
 // apps/notes/db/schema.ts
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { table, text, timestamp } from '@hub/db'
 import { createId } from '@paralleldrive/cuid2'
 
-export const notes = sqliteTable('notes_notes', {  // ← prefix: 'notes_'
+export const notes = table('notes_notes', {  // ← prefix: 'notes_'
   id: text('id').primaryKey().$defaultFn(() => createId()),
   title: text('title').notNull().default(''),
-  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  createdAt: timestamp('created_at').$defaultFn(() => new Date()),
+  updatedAt: timestamp('updated_at').$defaultFn(() => new Date()),
 })
 ```
 
-## Migrations (v0.1)
+### Available helpers from `@hub/db`
 
-Tables are created by `pnpm db:setup` (`scripts/db-setup.ts`). Raw `CREATE TABLE IF NOT EXISTS` SQL. Drizzle Kit migrations are planned for v0.5.
+| Helper | SQLite | Postgres | MySQL |
+|---|---|---|---|
+| `table(name, cols)` | `sqliteTable` | `pgTable` | `mysqlTable` |
+| `text(name)` | `text` | `text` | `text` |
+| `integer(name)` | `integer` | `integer` | `int` |
+| `boolean(name)` | `integer(mode:'boolean')` | `boolean` | `boolean` |
+| `timestamp(name)` | `integer(mode:'timestamp')` | `timestamp` | `datetime` |
+
+- **Table names** must start with the app's `tablePrefix` from its manifest
+- **IDs** use `@paralleldrive/cuid2` via `$defaultFn(() => createId())`
+- TypeScript canonical type = sqlite (precise for sqlite/turso/d1; approximate for pg/mysql)
+
+## Migrations
+
+```bash
+pnpm db:setup      # drizzle-kit push (dev/initial — no migration files)
+pnpm db:migrate    # drizzle-kit generate + migrate (production)
+pnpm db:generate   # generate SQL migration files only
+pnpm db:studio     # open Drizzle Studio to browse the DB
+```
+
+Schema auto-discovery: `drizzle.config.ts` globs `./apps/*/db/schema.ts` — no manual registration needed when you add a new app.

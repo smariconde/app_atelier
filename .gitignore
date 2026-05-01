@@ -49,6 +49,13 @@ public/serwist-*.js.map
 # Pattern: <app>-icon-<size>.png  /  <app>-icon-maskable.png
 public/*-icon-*.png
 
+# ─── Lighthouse CI ───────────────────────────────────────────────────────────
+.lighthouseci/
+
+# ─── Vercel ──────────────────────────────────────────────────────────────────
+.vercel/preview-url.txt
+error.txt
+
 # ─── Claude Code / AppAtelier Studio ─────────────────────────────────────────
 # Local overrides — keep project settings.json committed
 .claude/settings.local.json

@@ -24,7 +24,8 @@ When adding a new app, you must update these files manually:
 
 1. **`app/manifest.ts`** — add import + registry entry for dynamic PWA manifest
 2. **`app/apps/hub/page.tsx`** — add import + apps array entry for the icon grid
-3. **`scripts/db-setup.ts`** — add a `CREATE TABLE IF NOT EXISTS` block for the app's table(s). `db:setup` does not auto-discover `db/schema.ts` files.
+
+Database tables are **auto-discovered** — `drizzle.config.ts` globs `apps/*/db/schema.ts`. Run `pnpm db:setup` after adding a new app and no other DB registration is needed.
 
 `pnpm new-app <name>` prints reminders for #1 and #2. `pnpm doctor` will warn if it detects an app directory without a corresponding route.
 

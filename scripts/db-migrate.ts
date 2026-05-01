@@ -1,6 +1,13 @@
-// v0.1: migration is handled by db-setup.ts
-// This script is a placeholder for future migration tooling
 import { execSync } from 'child_process'
+import 'dotenv/config'
 
-console.log('Running db:setup (v0.1 uses single-step setup)...')
-execSync('tsx scripts/db-setup.ts', { stdio: 'inherit' })
+const adapter = process.env.DB_ADAPTER ?? 'sqlite'
+console.log(`Running migrations (adapter: ${adapter})...`)
+
+// Generate versioned SQL migration files from the current schema state.
+execSync('pnpm drizzle-kit generate', { stdio: 'inherit' })
+
+// Apply all pending migrations.
+execSync('pnpm drizzle-kit migrate', { stdio: 'inherit' })
+
+console.log('Migrations complete.')

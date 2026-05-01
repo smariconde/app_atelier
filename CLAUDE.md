@@ -1,6 +1,6 @@
 # CLAUDE.md — AppAtelier
 
-**v0.1 shipped.** One Next.js project, one Vercel deploy, wildcard subdomain routing. Each app is an independent PWA at its own subdomain. The hub at the root domain is a launcher (icon grid only).
+**v0.4 shipped.** One Next.js project, one Vercel deploy, wildcard subdomain routing. Each app is an independent PWA at its own subdomain. The hub at the root domain is a launcher (icon grid only). Deploy with `/deploy-app`; audit Lighthouse scores with `/pwa-audit`.
 
 ---
 
@@ -16,6 +16,7 @@ pnpm db:reset         # drop + recreate local.db
 pnpm new-app <name>   # scaffold a new app from _template
 pnpm doctor           # validate all manifests, schemas, PWA configs
 pnpm generate-icons   # --input <1024px.png> --app <id> → public/ icons
+pnpm audit            # --url <https://yourdomain.com> → Lighthouse scores for all apps
 ```
 
 ---
@@ -34,7 +35,9 @@ packages/@hub/auth      ← Better Auth, cross-subdomain SSO
 packages/@hub/ui        ← shadcn/ui components, dark mode
 packages/@hub/pwa       ← buildPWAManifest, InstallPrompt
 .claude/                ← agents and skills (AI studio)
-scripts/                ← new-app, db-*, generate-icons, doctor
+scripts/                ← new-app, db-*, generate-icons, doctor, audit
+lighthouserc.js         ← Lighthouse CI thresholds (≥90 all categories)
+vercel.json             ← Vercel project config (single project, Next.js framework)
 ```
 
 Deeper docs in each directory's own CLAUDE.md.

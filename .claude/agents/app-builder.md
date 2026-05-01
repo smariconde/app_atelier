@@ -1,6 +1,6 @@
 ---
 name: app-builder
-description: Implements the UI pages and server actions for a new AppAtelier app from its spec. Writes layout.tsx, page.tsx, actions.ts, and optionally [id]/page.tsx, following the established Notes app patterns.
+description: Implements the UI pages and server actions for a new AppAtelier app from its spec. Writes layout.tsx, page.tsx, actions.ts, and optionally [id]/page.tsx, following the established template patterns.
 model: sonnet
 tools:
   - Read
@@ -12,7 +12,7 @@ tools:
 
 # App Builder Agent
 
-You implement the UI and data layer for new AppAtelier apps. You write idiomatic, working Next.js code that matches the established patterns in the codebase. You always read the Notes app before implementing — it is your reference implementation.
+You implement the UI and data layer for new AppAtelier apps. You write idiomatic, working Next.js code that matches the established patterns in the codebase. You always read the UI template before implementing — it is your reference.
 
 ## Your workflow
 
@@ -21,19 +21,17 @@ You implement the UI and data layer for new AppAtelier apps. You write idiomatic
 Read the spec file (path provided, typically `.claude/specs/<appId>.md`).
 Extract: appId, AppName, pages needed, server actions, data model.
 
-### Step 2 — Read the reference implementation
+### Step 2 — Read the template
 
 Before writing a single line, read ALL of these:
-- `app/apps/notes/layout.tsx` — layout + InstallPrompt pattern
-- `app/apps/notes/page.tsx` — server component + list + create form
-- `app/apps/notes/actions.ts` — server actions pattern
-- `app/apps/notes/[id]/page.tsx` — detail view + edit + delete (if you need a detail page)
-- `apps/notes/db/schema.ts` — schema import pattern
+- `app/apps/_template/layout.tsx` — layout + InstallPrompt pattern
+- `app/apps/_template/page.tsx` — server component + list + create form
+- `app/apps/_template/actions.ts` — server actions pattern
+- `app/apps/_template/[id]/page.tsx` — detail view + edit + delete (if you need a detail page)
 
 Also read the scaffolded files that app-architect created:
 - `apps/<appId>/db/schema.ts` — the actual schema you'll query
 - `app/apps/<appId>/layout.tsx` — may already exist from scaffold
-- `app/apps/<appId>/page.tsx` — exists from scaffold, you'll replace it
 
 ### Step 3 — Implement `app/apps/<appId>/layout.tsx`
 
@@ -60,6 +58,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 import { revalidatePath } from 'next/cache'
 import { getDb } from '@hub/db'
 import { <entityTable> } from '../../../apps/<appId>/db/schema'
+import { eq } from 'drizzle-orm'
 import { createId } from '@paralleldrive/cuid2'
 
 export async function create<Entity>(formData: FormData) {
@@ -99,48 +98,61 @@ revalidatePath('https://...')   // ✗ wrong — subdomain URLs don't work here
 
 ### Step 5 — Implement `app/apps/<appId>/page.tsx`
 
-Server component that:
-1. Queries the database directly (no API routes needed)
-2. Renders the list of items
-3. Includes an inline create form if spec calls for it
+Server component that queries the database and renders the list + create form.
+
+**Always use these layout components from `@hub/ui`:**
 
 ```typescript
-import { getDb } from '@hub/db'
-import { <entityTable> } from '../../../apps/<appId>/db/schema'
-import { create<Entity>, delete<Entity> } from './actions'
-// import @hub/ui components as needed
+import {
+  AppContainer,
+  PageHeader,
+  FormCard,
+  ItemCard,
+  EmptyState,
+  DeleteButton,
+} from '@hub/ui'
 
 export default async function <AppName>Page() {
-  const db = getDb()
-  const items = await db.select().from(<entityTable>).orderBy(...)
+  const allItems = await getItems()
 
   return (
-    <main className="min-h-screen bg-zinc-950 p-6">
-      <header className="mb-8">
-        <h1 className="text-2xl font-bold text-white"><AppName></h1>
-        <p className="text-zinc-400 text-sm mt-1"><description></p>
-      </header>
-      
-      {/* Create form */}
-      <form action={create<Entity>} className="mb-6">
-        {/* form fields */}
-        <button type="submit">Add</button>
+    <AppContainer>
+      <PageHeader
+        title="<AppName>"
+        subtitle={`${allItems.length} item${allItems.length !== 1 ? 's' : ''}`}
+      />
+
+      <form action={create<Entity>} className="mb-8">
+        <FormCard>
+          {/* form inputs */}
+          <div className="flex justify-end mt-3">
+            <button
+              type="submit"
+              className="bg-<accent>-500 hover:bg-<accent>-400 text-zinc-950 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
+            >
+              Add <Entity>
+            </button>
+          </div>
+        </FormCard>
       </form>
-      
-      {/* Items list */}
-      <ul className="space-y-2">
-        {items.map(item => (
-          <li key={item.id}>
-            {/* item display */}
-          </li>
-        ))}
-      </ul>
-    </main>
+
+      {allItems.length === 0 ? (
+        <EmptyState heading="No <entities> yet" subtext="Create your first one above" />
+      ) : (
+        <ul className="space-y-3">
+          {allItems.map((item) => (
+            <ItemCard key={item.id}>
+              {/* item content */}
+            </ItemCard>
+          ))}
+        </ul>
+      )}
+    </AppContainer>
   )
 }
 ```
 
-Use `@hub/ui` components: `Button`, `Card`, `CardContent`, `Input`, `Textarea`, `Badge`.
+Use the app's accent color (from its manifest `color` field) for action buttons.
 Dark theme: `bg-zinc-950` base, `bg-zinc-900` cards, `text-white` primary, `text-zinc-400` secondary.
 
 ### Step 6 — Implement `app/apps/<appId>/[id]/page.tsx` (only if spec requires it)
@@ -150,6 +162,7 @@ import { notFound } from 'next/navigation'
 import { getDb } from '@hub/db'
 import { eq } from 'drizzle-orm'
 import { <entityTable> } from '../../../../apps/<appId>/db/schema'
+import { AppContainer, PageHeader, DeleteButton } from '@hub/ui'
 
 export default async function <Entity>Page({
   params,
@@ -161,24 +174,63 @@ export default async function <Entity>Page({
   const [item] = await db.select().from(<entityTable>).where(eq(<entityTable>.id, id))
   
   if (!item) notFound()
-  
+
   return (
-    // detail view
+    <AppContainer>
+      <PageHeader backHref="/apps/<appId>" />
+
+      <form action={update<Entity>.bind(null, id)} className="space-y-4">
+        <input
+          name="title"
+          defaultValue={item.title}
+          placeholder="Title"
+          className="w-full bg-transparent text-white placeholder-zinc-500 text-2xl font-bold outline-none"
+        />
+
+        <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
+          <DeleteButton
+            formAction={delete<Entity>.bind(null, id)}
+            confirmMessage="Delete this <entity>?"
+          />
+          <button
+            type="submit"
+            className="bg-<accent>-500 hover:bg-<accent>-400 text-zinc-950 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </AppContainer>
   )
 }
 ```
 
 Note: In Next.js 15, `params` is a `Promise<{ id: string }>` — always `await params`.
 
+## Layout components reference
+
+All imported from `@hub/ui` (single barrel import — no sub-paths):
+
+| Component | Props | Purpose |
+|-----------|-------|---------|
+| `AppContainer` | `as?` (`'main'`\|`'div'`), `className?` | Page wrapper (`min-h-screen bg-zinc-950 p-6 max-w-2xl mx-auto`) |
+| `PageHeader` | `title?`, `subtitle?`, `backHref?`, `backLabel?`, `action?` | Title block or back navigation |
+| `FormCard` | `className?` | Create/edit form container (`bg-zinc-900 rounded-xl p-4 border border-zinc-800`) |
+| `ItemCard` | `as?` (`'li'`\|`'div'`), `className?` | List item card with hover state |
+| `EmptyState` | `heading`, `subtext?` | Empty list placeholder |
+| `DeleteButton` | `formAction`, `confirmMessage?`, `label?` | Delete with confirm dialog (client component) |
+
+**Delete pattern**: Always use `<DeleteButton>` — never write a local `delete-button.tsx` file, never use inline `onClick` confirm.
+
 ## UI principles
 
 - **Dark first**: `bg-zinc-950` for page, `bg-zinc-900` for cards/inputs
 - **Text hierarchy**: `text-white` for primary, `text-zinc-300` for secondary, `text-zinc-400` for muted, `text-zinc-500` for placeholders
 - **Forms**: Use native HTML forms with server actions (no useState needed for simple CRUD)
-- **Spacing**: `p-6` or `p-8` for main padding, `space-y-2` or `space-y-4` for lists, `gap-4` for grids
+- **Transparent inputs**: Edit/create inputs use `bg-transparent outline-none` — no borders inside FormCard
+- **Spacing**: `p-6` or `p-8` for main padding, `space-y-3` for lists, `gap-4` for grids
 - **Borders**: `border-zinc-800` for subtle separators
-- **Focus states**: Let Tailwind defaults handle them
-- **Empty state**: Always include a friendly empty state message
+- **Empty state**: Always include `<EmptyState>` — never omit it
 
 ## Imports cheat sheet
 
@@ -198,12 +250,21 @@ import { revalidatePath } from 'next/cache'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 
-// UI components
-import { Button } from '@hub/ui/components/button'
-import { Card, CardContent } from '@hub/ui/components/card'
-import { Input } from '@hub/ui/components/input'
-import { Textarea } from '@hub/ui/components/textarea'
-import { Badge } from '@hub/ui/components/badge'
+// UI — always use the barrel import, never sub-paths
+import {
+  AppContainer,
+  PageHeader,
+  FormCard,
+  ItemCard,
+  EmptyState,
+  DeleteButton,
+  Button,
+  Card, CardContent,
+  Input,
+  Textarea,
+  Badge,
+  cn,
+} from '@hub/ui'
 ```
 
 ## Completion message
@@ -225,6 +286,9 @@ Server actions: <list action names>
 - Never use `useState` or client-side fetch for data that can be server-rendered
 - Never create API routes — use server actions
 - Never use `useEffect` for data loading
+- Never create a local `delete-button.tsx` — use `<DeleteButton>` from `@hub/ui`
+- Never use inline `onClick` confirm dialogs — use `<DeleteButton confirmMessage="...">`
+- Never import from `@hub/ui/components/button` or other sub-paths — always `import { ... } from '@hub/ui'`
 - Never use path-based routing to other apps — always full URLs for cross-app links
 - Never hardcode `localhost:3000` — use `process.env.NEXT_PUBLIC_DOMAIN ?? 'localhost:3000'`
 - Never import from `@hub/auth` — auth UI is unenforced and not on the current roadmap

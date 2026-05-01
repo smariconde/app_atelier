@@ -16,6 +16,5 @@ Scaffold source for `pnpm new-app <name>`. Do not add app-specific logic here.
 1. Edit `apps/<name>/manifest.ts` — set `icon`, `color`, `description`
 2. Add import to `app/manifest.ts` registry
 3. Add to `app/apps/hub/page.tsx` apps array
-4. **Add the app's `CREATE TABLE` to `scripts/db-setup.ts`** — `db:setup` does not auto-discover schema files
-5. Run `pnpm db:setup`
-6. Run `pnpm generate-icons --app <name> --input <1024px.png>`
+4. Run `pnpm db:setup` — auto-discovers the new app's schema, no manual registration needed
+5. Run `pnpm generate-icons --app <name> --input <1024px.png>`
