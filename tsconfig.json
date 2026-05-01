@@ -1,0 +1,50 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@hub/core": [
+        "./packages/core/src/index.ts"
+      ],
+      "@hub/db": [
+        "./packages/db/src/index.ts"
+      ],
+      "@hub/auth": [
+        "./packages/auth/src/index.ts"
+      ],
+      "@hub/ui": [
+        "./packages/ui/src/index.ts"
+      ],
+      "@hub/pwa": [
+        "./packages/pwa/src/index.ts"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "webworker"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

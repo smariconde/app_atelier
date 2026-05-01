@@ -1,0 +1,8 @@
+{
+  "name": "@app/notes",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@hub/core": "workspace:*"
+  }
+}

@@ -1,0 +1,86 @@
+# ─── Dependencies ────────────────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+
+# ─── Next.js ─────────────────────────────────────────────────────────────────
+.next/
+out/
+
+# ─── Turbo ───────────────────────────────────────────────────────────────────
+.turbo/
+
+# ─── Build output ────────────────────────────────────────────────────────────
+dist/
+build/
+
+# ─── TypeScript ──────────────────────────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ─── Environment ─────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ─── Database (Drizzle / SQLite) ─────────────────────────────────────────────
+# SQLite files — never commit local databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Drizzle migration snapshots are committed; generated SQL is not
+# (remove the next two lines if you commit drizzle output)
+# apps/*/drizzle/migrations/*.sql
+# apps/*/drizzle/meta/
+
+# ─── PWA / Service Worker (Serwist) ──────────────────────────────────────────
+# Generated at build time — never hand-edit these
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+public/serwist-*.js
+public/serwist-*.js.map
+
+# ─── Generated icons (pnpm generate-icons output) ────────────────────────────
+# Pattern: <app>-icon-<size>.png  /  <app>-icon-maskable.png
+public/*-icon-*.png
+
+# ─── Claude Code / AppAtelier Studio ─────────────────────────────────────────
+# Local overrides — keep project settings.json committed
+.claude/settings.local.json
+
+# Generated specs (studio output) — keep placeholder, ignore content
+.claude/specs/*.md
+!.claude/specs/.gitkeep
+
+# ─── OS / Editor ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+# Windows NUL device — accidentally created when redirecting to /dev/null on Windows
+nul
+
+# ─── Certificates / Keys ─────────────────────────────────────────────────────
+*.pem
+*.key
+*.crt
+*.p12
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Editor caches ───────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
