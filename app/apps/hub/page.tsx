@@ -3,9 +3,22 @@ import type { LucideProps } from 'lucide-react'
 import notesApp from '../../../apps/notes/manifest'
 import tasksApp from '../../../apps/tasks/manifest'
 import habitsApp from '../../../apps/habits/manifest'
+import dailyBriefingApp from '../../../apps/daily-briefing/manifest'
 import { buildAppUrl, type AppManifest } from '@hub/core'
 
-const apps: AppManifest[] = [notesApp, tasksApp, habitsApp]
+const apps: AppManifest[] = [notesApp, tasksApp, habitsApp, dailyBriefingApp]
+
+const MCP_REQUIRED_VARS: Record<string, string[]> = {
+  gmail:              ['GOOGLE_MCP_URL', 'GOOGLE_MCP_TOKEN'],
+  'google-calendar':  ['GOOGLE_MCP_URL', 'GOOGLE_MCP_TOKEN'],
+  drive:              ['GOOGLE_MCP_URL', 'GOOGLE_MCP_TOKEN'],
+  notion:             ['NOTION_MCP_TOKEN'],
+}
+
+function isMCPConfigured(serverId: string): boolean {
+  const required = MCP_REQUIRED_VARS[serverId] ?? []
+  return required.every((v) => !!process.env[v])
+}
 
 type IconName = keyof typeof LucideIcons
 
@@ -45,6 +58,7 @@ export default function HubPage() {
           .filter((a) => a.enabled)
           .map((app) => {
             const href = buildAppUrl(app.subdomain, domain)
+            const missingMCP = (app.mcpServers ?? []).filter((id) => !isMCPConfigured(id))
 
             return (
               <a
@@ -52,8 +66,16 @@ export default function HubPage() {
                 href={href}
                 className="flex flex-col items-center gap-2 group cursor-pointer"
               >
-                <div className="transform transition-transform group-hover:scale-105">
+                <div className="relative transform transition-transform group-hover:scale-105">
                   <AppIcon name={app.icon} color={app.color} />
+                  {missingMCP.length > 0 && (
+                    <span
+                      className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
+                      title={`MCP not connected: ${missingMCP.join(', ')}`}
+                    >
+                      !
+                    </span>
+                  )}
                 </div>
                 <span className="text-xs text-zinc-300 text-center">{app.name}</span>
               </a>

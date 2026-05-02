@@ -68,6 +68,19 @@ Do not proceed to scaffolding until spec is approved.
 
 ---
 
+## Phase 2b — MCP wiring _(only if spec declares `mcpServers`)_
+
+If the spec has an `## MCP Servers` section, invoke the `mcp-integrator` agent for each declared server:
+- Pass the `appId` and each `serverId`
+- The agent updates the manifest and prints env var setup instructions
+
+Show the setup instructions to the user, then add:
+> "You don't need to configure env vars before proceeding — the app will show a clear error message if they're missing. Configure them whenever you're ready."
+
+Do not block Phase 3 on MCP env var setup.
+
+---
+
 ## Gate 2: Scaffold Verification
 
 Wait for the user to confirm the scaffolded page loads.

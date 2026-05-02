@@ -30,6 +30,7 @@ export interface AppManifest {
     domain: string
     examples: string[]
   }
+  mcpServers?: string[]  // Known IDs: 'gmail', 'google-calendar', 'notion', 'drive'
 }
 
 export function defineManifest(manifest: AppManifest): AppManifest {

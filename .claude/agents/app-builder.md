@@ -281,6 +281,24 @@ After implementing all files, print:
 Server actions: <list action names>
 ```
 
+## MCP server actions (v0.6+)
+
+When a spec declares `mcpServers`, use the Vercel AI SDK directly. The Daily Briefing app is the canonical reference — read `app/apps/daily-briefing/actions.ts` before implementing any MCP server action.
+
+Key patterns:
+- Import `experimental_createMCPClient` and `streamText` from `'ai'`
+- Import `StreamableHTTPClientTransport` from `'@modelcontextprotocol/sdk/client/streamableHttp.js'`
+- Import `createAnthropic` from `'@ai-sdk/anthropic'`
+- Check required env vars at the top of the action and return a typed error early if missing
+- Use `createStreamableValue` from `'ai/rsc'` for streaming responses
+- The page that consumes the stream must be a Client Component (`'use client'`) using `readStreamableValue` from `'ai/rsc'`
+- `maxSteps` (typically 5–10) enables multi-turn tool use (fetch → summarize)
+
+Required env vars by server:
+- `gmail`, `google-calendar`, `drive` → `GOOGLE_MCP_URL` + `GOOGLE_MCP_TOKEN`
+- `notion` → `NOTION_MCP_TOKEN`
+- All AI actions → `ANTHROPIC_API_KEY`
+
 ## Never do these things
 
 - Never use `useState` or client-side fetch for data that can be server-rendered

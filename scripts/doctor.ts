@@ -6,6 +6,13 @@ const root = process.cwd()
 const args = process.argv.slice(2)
 const fixMode = args.includes('--fix')
 
+const MCP_REQUIRED_VARS: Record<string, string[]> = {
+  gmail:              ['GOOGLE_MCP_URL', 'GOOGLE_MCP_TOKEN'],
+  'google-calendar':  ['GOOGLE_MCP_URL', 'GOOGLE_MCP_TOKEN'],
+  drive:              ['GOOGLE_MCP_URL', 'GOOGLE_MCP_TOKEN'],
+  notion:             ['NOTION_MCP_TOKEN'],
+}
+
 let errors = 0
 let fixed = 0
 
@@ -209,6 +216,26 @@ if (fs.existsSync(appsDir)) {
         schemaContent.includes("from '@hub/db'"),
         `${appDir}/db/schema.ts imports from '@hub/db' (dialect-agnostic)`,
       )
+    }
+
+    const appManifestPath = path.join(appsDir, appDir, 'manifest.ts')
+    if (fs.existsSync(appManifestPath)) {
+      const appManifestContent = fs.readFileSync(appManifestPath, 'utf-8')
+      const mcpMatch = appManifestContent.match(/mcpServers:\s*\[([^\]]*)\]/)
+      if (mcpMatch) {
+        const mcpIds = [...mcpMatch[1].matchAll(/'([^']+)'/g)].map((m) => m[1])
+        console.log(`\n  MCP servers (${appDir}):`)
+        for (const id of mcpIds) {
+          const required = MCP_REQUIRED_VARS[id] ?? []
+          const allSet = required.every((v) => !!process.env[v])
+          // MCP is optional — informational only, never blocks commits
+          if (allSet) {
+            console.log(`  ✓ MCP "${id}" configured`)
+          } else {
+            console.log(`  ⚠ MCP "${id}" not configured (${required.join(', ')} — see docs/mcp.md)`)
+          }
+        }
+      }
     }
   }
 }

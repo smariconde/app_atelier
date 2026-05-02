@@ -119,17 +119,19 @@ The deployment model is: **one Vercel project, wildcard DNS, middleware routing*
 
 ---
 
-## 📋 v0.6 — MCP Integrations
+## ✅ v0.6 — MCP Integrations _(shipped 2026-05-01)_
 
 **Goal**: Apps can consume external services via MCP servers cleanly.
 
-- [ ] `@hub/ai` exports a typed MCP client wrapper
-- [ ] Manifests can declare `mcpServers: ['gmail', 'notion', ...]`
-- [ ] Skill `/add-mcp` connects an MCP server to an existing app
-- [ ] Hub shows "MCP not connected" state when missing
-- [ ] Example app: "Daily Briefing" using Gmail + Calendar MCP
-- [ ] Vercel AI SDK helpers for streaming, tool use
-- [ ] Docs: how to add a new MCP integration
+- [x] Manifests can declare `mcpServers: ['gmail', 'notion', ...]`
+- [x] Skill `/add-mcp` connects an MCP server to an existing app
+- [x] Hub shows "MCP not connected" badge when env vars missing
+- [x] Example app: "Daily Briefing" using Gmail + Calendar MCP
+- [x] Vercel AI SDK v6 (`ai` package) + `@modelcontextprotocol/sdk` for streaming, tool use
+- [x] Docs: `docs/mcp.md` — setup guide, patterns, troubleshooting
+- [x] `pnpm doctor` validates MCP env vars per app
+- [x] New agent: `mcp-integrator` — connects servers, prints setup instructions
+- [x] `app-builder` knows the MCP server action pattern
 
 **Definition of done**: an app can declare an MCP dependency in its manifest and consume it without boilerplate. The studio understands and respects MCP dependencies during creation.
 

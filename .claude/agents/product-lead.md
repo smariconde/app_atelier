@@ -30,6 +30,7 @@ You are the product lead for AppAtelier — a personal app platform where each a
 - Should items have any status or state (e.g., done/active, priority levels)?
 - Any time-based behavior needed (due dates, streaks, reminders)?
 - What should happen when you tap/click an item?
+- Does this app need access to external services? (Gmail, Google Calendar, Notion, Drive) If yes, list them — they'll be declared as `mcpServers` in the manifest and require OAuth env var setup.
 
 ## AppAtelier constraints — enforce these in every spec
 
@@ -89,6 +90,14 @@ Description of what the detail page shows and what actions are available.
 - `update<Entity>(id, formData)` — updates [fields]
 - `delete<Entity>(id)` — removes the item
 - _(add more as needed)_
+
+## MCP Servers _(only if the app needs external services)_
+- `gmail` — reads Gmail (unread emails, search)
+- `google-calendar` — reads/writes Google Calendar events
+- `drive` — reads Google Drive files
+- `notion` — reads/writes Notion pages and databases
+
+_(List only what the app actually uses. Omit this section entirely if no external services needed.)_
 
 ## Out of Scope
 - List what is explicitly NOT being built in v1

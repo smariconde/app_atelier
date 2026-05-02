@@ -14,6 +14,7 @@ Agents are sub-agents invoked by skills or directly. Each has a markdown definit
 | `design-lead` | Palette, icon, typography decisions — theme brief with approval gate (Opus) |
 | `app-architect` | Runs `pnpm new-app`, wires manifest registry |
 | `app-builder` | Implements pages + server actions from spec or change plan |
+| `mcp-integrator` | Connects MCP servers to apps — updates manifest + prints setup instructions |
 | `db-migrator` | Schema changes, drizzle-kit generate + migrate, shows SQL before applying |
 | `ui-designer` | Implements design-lead theme brief — CSS variables + manifest update |
 | `pwa-specialist` | Manifest validation, icons, install prompt, `pnpm doctor` |
@@ -32,7 +33,7 @@ Skills are invoked with `/skill-name` in the Claude Code UI.
 | `/theme-app` | Change palette, icon, typography via design-lead + ui-designer |
 | `/deploy-app` | Vercel deploy + DNS instructions + preflight gate |
 | `/pwa-audit` | Lighthouse + manifest validation |
-| `/add-mcp` _(v0.6)_ | Connect an MCP server to an app |
+| `/add-mcp` | Connect an MCP server to an existing app |
 
 ## Hooks (`.claude/settings.json`)
 
