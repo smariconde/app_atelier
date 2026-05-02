@@ -1,0 +1,84 @@
+name: Bug Report
+description: Something isn't working as expected
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Fill in as much detail as you can — it makes fixing faster.
+
+  - type: dropdown
+    id: affected
+    attributes:
+      label: Affected app or package
+      description: Which part of AppAtelier is affected?
+      options:
+        - "@hub/core"
+        - "@hub/pwa"
+        - "@hub/db"
+        - "@hub/auth"
+        - "@hub/ui"
+        - "hub (launcher)"
+        - "notes (example app)"
+        - "tasks (example app)"
+        - "habits (example app)"
+        - "daily-briefing (example app)"
+        - "doctor script"
+        - "new-app script"
+        - "AI studio (agents/skills)"
+        - "other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What did you do to trigger this bug?
+      placeholder: |
+        1. Run `pnpm dev`
+        2. Navigate to notes.localhost:3000
+        3. Click "New note"
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Fill in your environment details.
+      value: |
+        - Node version:
+        - pnpm version:
+        - OS:
+        - DB adapter (DB_ADAPTER env var):
+        - Deploy target (local / Vercel / self-hosted):
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or error output
+      description: Paste any terminal output, browser console errors, or stack traces. This field is optional but very helpful.
+      render: shell
+    validations:
+      required: false

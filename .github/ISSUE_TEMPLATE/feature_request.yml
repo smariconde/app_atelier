@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest an idea or improvement
+labels: ["enhancement"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before suggesting a feature, please check the [Explicitly out of scope](https://github.com/smariconde/app_atelier/blob/main/ROADMAP.md#-explicitly-out-of-scope) section in ROADMAP.md. Requests that fall into that list will be closed without further discussion.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do? What's the friction you're hitting? Describe the real situation, not just the desired feature.
+      placeholder: "When I try to ... I find that ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How do you think this should work? Be as concrete as you can.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Have you tried working around this in another way? Are there existing tools that solve part of the problem?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope_check
+    attributes:
+      label: Scope check
+      description: Please confirm you've reviewed what's out of scope before submitting.
+      options:
+        - label: I have read the [Explicitly out of scope](https://github.com/smariconde/app_atelier/blob/main/ROADMAP.md#-explicitly-out-of-scope) section in ROADMAP.md and this request does not fall into that list.
+          required: true

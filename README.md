@@ -326,11 +326,12 @@ See [`docs/pwa-deep-dive.md`](docs/pwa-deep-dive.md).
 See [ROADMAP.md](ROADMAP.md).
 
 - ✅ **v0.1** — Foundation: manifest + PWA contract, hub launcher, middleware routing
-- 🚧 **v0.2** — Studio v0: 4 core agents, `/create-app` skill end-to-end
-- 📋 **v0.3** — Studio v1: full 7-agent team, 7 skills, validation hooks
-- 📋 **v0.4** — Deploy automation: `pnpm ship`, DNS guide, self-hosted option
-- 📋 **v0.5** — Backend adapters: Postgres, Turso, D1, MySQL all stable
-- 🎯 **v1.0** — Stable contracts, full docs, community-ready
+- ✅ **v0.2** — Studio v0: 4 core agents, `/create-app` skill end-to-end
+- ✅ **v0.3** — Studio v1: full 12-agent team, 7 skills, validation hooks
+- ✅ **v0.4** — Deploy automation: `/deploy-app` skill, Lighthouse gate, PWA audit
+- ✅ **v0.5** — Backend adapters: Postgres, Turso, D1, MySQL all stable
+- ✅ **v0.6** — MCP integrations: Gmail, Calendar, Notion, Drive + Daily Briefing app
+- ✅ **v1.0** — Stable contracts (`@hub/core` + `@hub/pwa` at 1.0.0), full docs, tests, community-ready
 
 ---
 

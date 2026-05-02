@@ -6,11 +6,11 @@ export default defineManifest({
   name: 'Daily Briefing',
   description: 'AI-powered summary of your Gmail and Calendar',
   icon: 'sun',
-  color: '#F59E0B',
+  color: '#38BDF8',
   enabled: true,
   status: 'experimental',
   pwa: {
-    themeColor: '#F59E0B',
+    themeColor: '#38BDF8',
     backgroundColor: '#09090B',
     display: 'standalone',
     icons: [

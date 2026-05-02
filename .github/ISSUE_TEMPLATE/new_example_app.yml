@@ -1,0 +1,79 @@
+name: New Example App
+description: Share an app you built with AppAtelier
+labels: ["example-app"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Sharing an app you've built is one of the most valuable contributions to the project. Example apps show other people what the paradigm enables and give them starting points for their own builds.
+
+        If you have a working implementation, open a PR alongside this issue — link it in the last field below.
+
+  - type: input
+    id: app_name
+    attributes:
+      label: App name and one-line description
+      description: What's the app called and what does it do in one sentence?
+      placeholder: "Reading Log — tracks books I've read with notes, ratings, and a yearly goal"
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: What problem does it solve?
+      description: Describe the real use case. Who is this for (even if that's just you), and what friction does it remove?
+      placeholder: "I wanted to track what I read without Goodreads's social features or its recommendation engine pushing me toward popular books. This just logs what I've read, lets me add a note, and shows me my yearly goal progress."
+    validations:
+      required: true
+
+  - type: textarea
+    id: manifest
+    attributes:
+      label: Manifest snippet
+      description: Paste your `manifest.ts` (or the key parts of it). This helps reviewers understand the app's structure at a glance.
+      render: typescript
+      placeholder: |
+        import { defineManifest } from '@hub/core';
+
+        export default defineManifest({
+          id: 'reading-log',
+          name: 'Reading Log',
+          description: 'Track books with ratings and yearly goals',
+          version: '0.1.0',
+
+          icon: 'book-open',
+          color: '#F59E0B',
+          subdomain: 'reading',
+
+          enabled: true,
+          status: 'stable',
+
+          database: {
+            schemaPath: './db/schema.ts',
+            tablePrefix: 'reading_',
+            migrations: './db/migrations',
+          },
+
+          aiContext: {
+            description: 'Logs books read with ratings, notes, and yearly reading goals',
+            domain: 'personal',
+            examples: [
+              'Log that I finished Dune, 5 stars',
+              'How many books have I read this year?',
+              'Show me my notes on Thinking Fast and Slow',
+            ],
+          },
+        });
+    validations:
+      required: true
+
+  - type: input
+    id: pr_link
+    attributes:
+      label: Pull request link (optional)
+      description: If you've already opened a PR with the implementation, paste the link here.
+      placeholder: "https://github.com/smariconde/app_atelier/pull/42"
+    validations:
+      required: false

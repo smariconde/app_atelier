@@ -1,6 +1,6 @@
 # 🛣️ AppAtelier — Roadmap
 
-This is a living document. Last updated: 2026-05-01.
+This is a living document. Last updated: 2026-05-02.
 
 The goal of this project is to make the paradigm Naval describes real and accessible: **anyone should be able to describe what they want in plain language and end up with a real, installable app built exactly for them**. The roadmap prioritizes the things that close the gap between "I have an idea" and "the app is on my phone".
 
@@ -137,20 +137,20 @@ The deployment model is: **one Vercel project, wildcard DNS, middleware routing*
 
 ---
 
-## 🎯 v1.0 — Public Release
+## ✅ v1.0 — Public Release _(shipped 2026-05-02)_
 
 **Goal**: Stable enough for community adoption. Docs polished. APIs frozen.
 
-- [ ] Manifest contract API frozen (semver promise from here)
-- [ ] Migration guide: v0.x → v1.0
-- [ ] Full docs site (Nextra or Fumadocs)
-- [ ] Video walkthrough: "From clone to phone in 10 min"
-- [ ] At least 5 community-contributed example apps
-- [ ] At least 3 community-contributed agents/skills
-- [ ] Issue templates, PR templates, CONTRIBUTING guide
-- [ ] Test coverage > 70% on `@hub/core`, `@hub/pwa`
-- [ ] Lighthouse score > 95 on hub and all example apps
-- [ ] HN launch + Twitter announcement
+- [x] Manifest contract API frozen — `@hub/core` and `@hub/pwa` at 1.0.0, semver promise from here
+- [x] Migration guide: v0.x → v1.0 (`docs/migration.md`)
+- [x] Full documentation: getting-started, architecture, creating-apps, AI studio, PWA deep-dive, theming, deployment, backend options
+- [ ] Video walkthrough: "From clone to phone in 10 min" _(post-launch)_
+- [ ] At least 5 community-contributed example apps _(open for contributions)_
+- [ ] At least 3 community-contributed agents/skills _(open for contributions)_
+- [x] Issue templates, PR templates, CONTRIBUTING guide
+- [x] Test coverage > 70% on `@hub/core`, `@hub/pwa` (vitest, CI-gated)
+- [ ] Lighthouse score > 95 on hub and all example apps _(requires production deployment)_
+- [ ] HN launch + Twitter announcement _(post-release)_
 
 ---
 
