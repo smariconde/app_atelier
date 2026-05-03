@@ -13,11 +13,6 @@ export default defineManifest({
     themeColor: '#10B981',
     backgroundColor: '#09090B',
     display: 'standalone',
-    icons: [
-      { src: '/tasks-icon-192.png', sizes: '192x192', type: 'image/png' },
-      { src: '/tasks-icon-512.png', sizes: '512x512', type: 'image/png' },
-      { src: '/tasks-icon-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-    ],
   },
   database: {
     schemaPath: './db/schema.ts',

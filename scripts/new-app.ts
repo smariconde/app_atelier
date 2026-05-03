@@ -107,8 +107,8 @@ Pages live in \`app/apps/${appId}/\`:
 3. Add to \`app/apps/hub/page.tsx\` apps array
 4. Define schema in \`db/schema.ts\`
 5. Run \`pnpm db:setup\`
-6. Run \`pnpm generate-icons --app ${appId} --input <1024px.png>\`
-7. Implement \`app/apps/${appId}/page.tsx\` and \`actions.ts\`
+6. Implement \`app/apps/${appId}/page.tsx\` and \`actions.ts\`
+(Icons auto-generated from manifest icon + color — no setup needed)
 `
 )
 
@@ -125,5 +125,5 @@ Next steps:
        import ${appId}App from '../../../apps/${appId}/manifest'
        // add to apps array
   4. Run: pnpm db:setup   (to create tables)
-  5. Run: pnpm generate-icons --app ${appId} --input <path-to-1024px.png>
+  (Icons auto-generated from manifest icon + color — no manual step needed)
 `)

@@ -28,12 +28,14 @@ for (const appDir of appDirs) {
 
   const content = fs.readFileSync(manifestPath, 'utf-8')
   const status = parseField(content, 'status')
-  const iconsOk = fs.existsSync(path.join(root, 'public', `${appDir}-icon-192.png`))
+  const hasStaticIcon = fs.existsSync(path.join(root, 'public', `${appDir}-icon-192.png`))
+  const hasExplicitIcons = content.includes('icons:') && content.includes('src:')
+  const iconsLabel = hasStaticIcon ? 'static' : hasExplicitIcons ? 'missing' : 'dynamic'
 
   const appCol = appDir.padEnd(12)
   const statusCol = status.padEnd(12)
   const urlCol = `${appDir}.localhost:3000`.padEnd(28)
-  console.log(`  ✓ ${appCol} ${statusCol} ${urlCol} icons: ${iconsOk ? 'ok' : 'missing'}`)
+  console.log(`  ✓ ${appCol} ${statusCol} ${urlCol} icons: ${iconsLabel}`)
 }
 
 const agentsDir = path.join(root, '.claude', 'agents')

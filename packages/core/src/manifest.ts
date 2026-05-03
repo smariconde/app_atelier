@@ -13,7 +13,7 @@ export interface AppManifest {
     backgroundColor: string
     display: 'standalone' | 'fullscreen' | 'minimal-ui' | 'browser'
     orientation?: 'portrait' | 'landscape' | 'any'
-    icons: Array<{
+    icons?: Array<{
       src: string
       sizes: string
       type?: string

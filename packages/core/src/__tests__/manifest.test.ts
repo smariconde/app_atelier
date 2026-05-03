@@ -43,7 +43,7 @@ describe('defineManifest', () => {
     expect(result.pwa.backgroundColor).toBe('#ffffff')
     expect(result.pwa.display).toBe('standalone')
     expect(result.pwa.icons).toHaveLength(1)
-    expect(result.pwa.icons[0].src).toBe('/icon-192.png')
+    expect(result.pwa.icons![0].src).toBe('/icon-192.png')
   })
 
   it('leaves optional description undefined when not provided', () => {
@@ -116,6 +116,6 @@ describe('defineManifest', () => {
         icons: [{ src: '/icon-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }],
       },
     })
-    expect(result.pwa.icons[0].purpose).toBe('maskable')
+    expect(result.pwa.icons![0].purpose).toBe('maskable')
   })
 })
