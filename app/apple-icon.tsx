@@ -3,16 +3,10 @@ import { headers } from 'next/headers'
 import fs from 'fs'
 import path from 'path'
 import { resolveApp } from './manifest'
+import { getLucideElement } from './_lib/lucide-svg'
 
 export const size = { width: 180, height: 180 }
 export const contentType = 'image/png'
-
-function toPascalCase(kebab: string): string {
-  return kebab
-    .split('-')
-    .map((w) => w[0].toUpperCase() + w.slice(1))
-    .join('')
-}
 
 export default async function AppleIcon() {
   const h = await headers()
@@ -27,11 +21,7 @@ export default async function AppleIcon() {
     }
   }
 
-  const iconName = toPascalCase(app.icon)
-  const lucide = await import('lucide-react')
-  const IconComponent = (lucide as Record<string, unknown>)[iconName] as
-    | React.FC<{ color: string; size: number; strokeWidth: number }>
-    | undefined
+  const iconEl = getLucideElement(app.icon, 'white', 100, 1.5)
 
   return new ImageResponse(
     (
@@ -46,7 +36,7 @@ export default async function AppleIcon() {
           borderRadius: '22%',
         }}
       >
-        {IconComponent && <IconComponent color="white" size={100} strokeWidth={1.5} />}
+        {iconEl}
       </div>
     ),
     { ...size },
