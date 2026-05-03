@@ -1,14 +1,14 @@
 # Contributing to AppAtelier
 
-AppAtelier is a personal-software platform heading toward its v1.0 public release. Contributions that help close the gap between "I described what I want" and "the app is on my phone" are the most valuable ones right now.
+AppAtelier is a personal-software platform — v1.0 is out and open for community contributions. Contributions that help close the gap between "I described what I want" and "the app is on my phone" are the most valuable ones right now.
 
 ---
 
 ## What's most useful right now
 
-Based on the [ROADMAP.md](ROADMAP.md) v1.0 goals, the highest-impact contributions are:
+With v1.0 shipped, the highest-impact contributions for v1.x are:
 
-1. **New example apps** — real apps you've built for yourself that demonstrate what the paradigm enables. The goal is at least 5 community-contributed apps before v1.0.
+1. **New example apps** — real apps you've built for yourself that demonstrate what the paradigm enables. The goal is a growing gallery of community-contributed apps showing what personal software can look like.
 2. **New agent definitions** — specialists for domains the studio doesn't yet cover (finance, health, media, travel, etc.).
 3. **New skills** — workflows you find yourself invoking repeatedly that aren't covered by the existing 7 skills.
 4. **Non-Vercel deploy docs** — guides for Coolify, Dokploy, Fly.io, and self-hosted setups. The architecture supports it; the docs don't exist yet.
@@ -37,8 +37,8 @@ See the [Explicitly out of scope](ROADMAP.md#-explicitly-out-of-scope) section i
 
 ```bash
 # 1. Fork and clone
-git clone https://github.com/<your-fork>/appatelier.git
-cd appatelier
+git clone https://github.com/<your-fork>/app_atelier.git
+cd app_atelier
 
 # 2. Install dependencies (requires pnpm ≥ 9 and Node ≥ 20)
 pnpm install
@@ -131,6 +131,15 @@ Before submitting a pull request, make sure:
 - [ ] `ROADMAP.md` is updated if your PR delivers a tracked milestone item
 
 Use the [pull request template](.github/pull_request_template.md) when opening your PR.
+
+---
+
+## Community
+
+- **GitHub Issues** — bugs, feature requests: [github.com/smariconde/app_atelier/issues](https://github.com/smariconde/app_atelier/issues)
+- **GitHub Discussions** — ideas, show-and-tell, Q&A: [github.com/smariconde/app_atelier/discussions](https://github.com/smariconde/app_atelier/discussions)
+
+The studio itself is the best way to build example apps — describe what you want to Claude with the repo open and the agents will scaffold it for you. Dog-fooding the platform is the fastest way to find gaps worth contributing.
 
 ---
 

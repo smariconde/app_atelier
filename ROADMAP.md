@@ -1,6 +1,6 @@
 # 🛣️ AppAtelier — Roadmap
 
-This is a living document. Last updated: 2026-05-02.
+This is a living document. Last updated: 2026-05-03.
 
 The goal of this project is to make the paradigm Naval describes real and accessible: **anyone should be able to describe what they want in plain language and end up with a real, installable app built exactly for them**. The roadmap prioritizes the things that close the gap between "I have an idea" and "the app is on my phone".
 
@@ -144,13 +144,28 @@ The deployment model is: **one Vercel project, wildcard DNS, middleware routing*
 - [x] Manifest contract API frozen — `@hub/core` and `@hub/pwa` at 1.0.0, semver promise from here
 - [x] Migration guide: v0.x → v1.0 (`docs/migration.md`)
 - [x] Full documentation: getting-started, architecture, creating-apps, AI studio, PWA deep-dive, theming, deployment, backend options
-- [ ] Video walkthrough: "From clone to phone in 10 min" _(post-launch)_
-- [ ] At least 5 community-contributed example apps _(open for contributions)_
-- [ ] At least 3 community-contributed agents/skills _(open for contributions)_
+- [ ] Video walkthrough: "From clone to phone in 10 min" _(post-launch, in progress)_
+- [ ] Community example apps gallery _(ongoing — open for contributions)_
+- [ ] Community-contributed agents/skills _(ongoing — open for contributions)_
 - [x] Issue templates, PR templates, CONTRIBUTING guide
 - [x] Test coverage > 70% on `@hub/core`, `@hub/pwa` (vitest, CI-gated)
-- [ ] Lighthouse score > 95 on hub and all example apps _(requires production deployment)_
-- [ ] HN launch + Twitter announcement _(post-release)_
+- [ ] Lighthouse score > 95 on hub and all example apps _(ongoing — requires production URL)_
+- [ ] HN launch + Twitter announcement _(post-launch)_
+
+---
+
+## 🔧 v1.x — Incremental improvements _(no fixed date)_
+
+Smaller-scope work that improves the platform without requiring a major milestone. Best entry points for first contributors.
+
+- [ ] **Performance audit** — measure and reduce TTI and bundle size on hub + example apps `good first issue`
+- [ ] **DX improvements** — better error messages from `pnpm doctor`, faster `pnpm new-app` scaffold `good first issue`
+- [ ] **Docs improvements** — screencasts, Coolify/Fly.io/Docker Compose self-hosted guides `good first issue`
+- [ ] **More example apps** — finance, health, media, travel — built via the studio and contributed back `good first issue`
+- [ ] **Additional backend: MongoDB** — adapter for document-store use cases `help wanted`
+- [ ] **Studio improvements** — richer agent feedback, better spec diffs at approval gates `help wanted`
+
+> `good first issue` items are well-scoped and self-contained. `help wanted` items benefit from deeper codebase familiarity.
 
 ---
 
@@ -158,12 +173,12 @@ The deployment model is: **one Vercel project, wildcard DNS, middleware routing*
 
 These aren't promised, but represent interesting directions if the core is solid:
 
-- **App templates gallery** — community-contributed starting points. "I want something like this person's fitness tracker, but for X" → clone the template, describe your customizations
-- **Sync layer** — optional CRDT-based sync (Yjs/Automerge) for multi-device use of the same app
-- **Mobile shell** — wrap the hub in Capacitor for a truly native installable container on iOS/Android
-- **Self-hosted Docker image** — one-command deploy on Coolify, Dokploy, Fly.io for people who want zero cloud vendor dependency
-- **Studio observability** — token usage, agent runtimes, success rates per skill, so the studio improves over time
-- **App backup/restore** — export an app's data + config as a portable bundle
+- **App templates gallery** — community-contributed starting points. "I want something like this person's fitness tracker, but for X" → clone the template, describe your customizations `help wanted`
+- **Sync layer** — optional CRDT-based sync (Yjs/Automerge) for multi-device use of the same app `help wanted`
+- **Mobile shell** — wrap the hub in Capacitor for a truly native installable container on iOS/Android `help wanted`
+- **Self-hosted Docker image** — one-command deploy on Coolify, Dokploy, Fly.io for people who want zero cloud vendor dependency `good first issue`
+- **Studio observability** — token usage, agent runtimes, success rates per skill, so the studio improves over time `help wanted`
+- **App backup/restore** — export an app's data + config as a portable bundle `good first issue`
 
 ---
 
@@ -190,3 +205,15 @@ These keep getting suggested. The answer is no:
 3. Bonus: link to a PR with a prototype
 
 The bar for adding things to v1.0 is high. The bar for post-1.0 ideas is much lower — we want to see what the community actually builds.
+
+---
+
+## Community
+
+AppAtelier is open source and built around the idea that personal software should be accessible to everyone.
+
+- **Show what you built** — [GitHub Discussions](https://github.com/smariconde/app_atelier/discussions): share apps you've created with the studio
+- **Report bugs / suggest features** — [GitHub Issues](https://github.com/smariconde/app_atelier/issues)
+- **Contribute code** — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup, PR process, and what's most needed
+
+The best contribution is an example app you actually use — it proves the paradigm and gives future users a real starting point.

@@ -3,10 +3,14 @@
 > *"The future isn't just big generic apps. It's ultra-niche, ultra-personalized apps that each individual can create for their exact needs — with no design compromises."*
 > — Naval Ravikant
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/smariconde/app_atelier/actions/workflows/ci.yml/badge.svg)](https://github.com/smariconde/app_atelier/actions/workflows/ci.yml)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Built with Claude](https://img.shields.io/badge/Built%20with-Claude%20Code-8a2be2)](https://claude.com/claude-code)
 [![PWA](https://img.shields.io/badge/PWA-Ready-success)](https://web.dev/progressive-web-apps/)
+[![Node.js ≥20](https://img.shields.io/badge/Node.js-%E2%89%A520-339933?logo=node.js)](https://nodejs.org)
+[![pnpm ≥10](https://img.shields.io/badge/pnpm-%E2%89%A510-F69220?logo=pnpm)](https://pnpm.io)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15-000000?logo=next.js)](https://nextjs.org)
 
 ---
 
@@ -153,8 +157,8 @@ You stay in control. Every spec gets your approval before code is written. Every
 ### Local development
 
 ```bash
-git clone https://github.com/<you>/appatelier.git
-cd appatelier
+git clone https://github.com/smariconde/app_atelier.git
+cd app_atelier
 pnpm install
 cp .env.example .env
 pnpm db:setup
@@ -323,34 +327,38 @@ See [`docs/pwa-deep-dive.md`](docs/pwa-deep-dive.md).
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md).
+AppAtelier is at **v1.0** — stable API contracts, full documentation, community-ready. All milestones from v0.1 through v1.0 are shipped.
 
-- ✅ **v0.1** — Foundation: manifest + PWA contract, hub launcher, middleware routing
-- ✅ **v0.2** — Studio v0: 4 core agents, `/create-app` skill end-to-end
-- ✅ **v0.3** — Studio v1: full 12-agent team, 7 skills, validation hooks
-- ✅ **v0.4** — Deploy automation: `/deploy-app` skill, Lighthouse gate, PWA audit
-- ✅ **v0.5** — Backend adapters: Postgres, Turso, D1, MySQL all stable
-- ✅ **v0.6** — MCP integrations: Gmail, Calendar, Notion, Drive + Daily Briefing app
-- ✅ **v1.0** — Stable contracts (`@hub/core` + `@hub/pwa` at 1.0.0), full docs, tests, community-ready
+See [ROADMAP.md](ROADMAP.md) for the full history, v1.x improvements, and post-1.0 community directions.
 
 ---
 
 ## Contributing
 
-The most useful contributions right now:
+AppAtelier is v1.0 and actively maintained. The most impactful contributions:
 
-- **New example apps** — real apps you've built for yourself, showing what the paradigm enables
+- **New example apps** — real apps you've built for yourself, proving what the paradigm enables
 - **New agent definitions** — specialists for domains the studio doesn't cover yet
-- **New skills** — workflows you find yourself doing repeatedly
+- **New skills** — workflows you find yourself invoking repeatedly
 - **Non-Vercel deploy docs** — Coolify, Dokploy, Fly.io, self-hosted guides
+- **Bug reports and DX improvements** — `@hub/core`, `@hub/pwa`, `@hub/db`, `@hub/auth`
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup and PR process.
+
+---
+
+## Community
+
+- **GitHub Issues** — bugs and feature requests: [github.com/smariconde/app_atelier/issues](https://github.com/smariconde/app_atelier/issues)
+- **GitHub Discussions** — Q&A, show-and-tell, roadmap feedback: [github.com/smariconde/app_atelier/discussions](https://github.com/smariconde/app_atelier/discussions)
+
+Show what you've built. The best advertisement for the paradigm is a real app someone built for themselves.
 
 ---
 
 ## License
 
-MIT — build whatever you want for yourself.
+[MIT](LICENSE) — build whatever you want for yourself.
 
 ---
 

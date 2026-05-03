@@ -1,6 +1,6 @@
 # CLAUDE.md — AppAtelier
 
-**v0.4 shipped.** One Next.js project, one Vercel deploy, wildcard subdomain routing. Each app is an independent PWA at its own subdomain. The hub at the root domain is a launcher (icon grid only). Deploy with `/deploy-app`; audit Lighthouse scores with `/pwa-audit`.
+**v1.0 shipped.** One Next.js project, one Vercel deploy, wildcard subdomain routing. Each app is an independent PWA at its own subdomain. The hub at the root domain is a launcher (icon grid only). Full 9-agent studio with MCP support. Deploy with `/deploy-app`; audit Lighthouse scores with `/pwa-audit`.
 
 ---
 
