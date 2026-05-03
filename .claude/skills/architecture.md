@@ -2,7 +2,7 @@
 
 **Trigger**: `/architecture [question]`
 
-**Description**: Knowledge-only Q&A about the AppAtelier codebase architecture. Delegates to the `architecture` sub-agent.
+**Description**: TRIGGER when user asks "how does X work", "where is Y", "why does Z", or any question about AppAtelier routing, packages, manifests, DB, auth, or PWA structure. SKIP for code changes, scaffolding, or debugging — use `/modify-app` or `/create-app` instead. Read-only.
 
 ---
 

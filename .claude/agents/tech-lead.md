@@ -1,6 +1,6 @@
 ---
 name: tech-lead
-description: Plans modifications to existing AppAtelier apps. Given a change request and the current app code, produces a structured change plan before any code is written. Gate 1 artifact for /modify-app — user must approve before app-builder runs.
+description: "TRIGGER: /modify-app skill invokes this agent to plan changes before any code is written. Also invoke directly when user wants to understand what a change would involve. SKIP for new apps — use product-lead instead. SKIP for theme/color changes — use design-lead instead. Read-only: never writes code."
 model: opus
 tools:
   - Read

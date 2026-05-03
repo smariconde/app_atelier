@@ -6,6 +6,30 @@
 
 ---
 
+## Before You Start
+
+- App exists: `ls apps/<appId>/`
+- Dev server running: `pnpm dev`
+- No conflicting uncommitted changes: `git status`
+
+If the app doesn't exist, use `/create-app` instead.
+
+## Change type — guide for invoking tech-lead
+
+Pre-classify the change before invoking tech-lead so it can confirm or correct:
+
+```
+Is this UI only? (labels, layout, copy, color)
+├── YES → Schema Changes: NO. db-migrator skipped.
+└── NO: Does it add/remove data fields?
+    ├── YES → Schema Changes: YES. db-migrator WILL run.
+    └── NO: Does it add a new page/route?
+        ├── YES → Likely no schema change. tech-lead confirms.
+        └── NO → Probably UI-only.
+```
+
+Include this classification in your context to tech-lead.
+
 ## Overview
 
 Two approval gates protect existing apps:

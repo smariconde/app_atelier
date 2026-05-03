@@ -2,9 +2,17 @@
 
 **Trigger**: `/add-mcp <appId> <serverId>`
 
-**Description**: Connects an MCP server to an existing app. Updates the manifest `mcpServers` declaration and prints setup instructions. Does not write app code — if you want a server action that uses the MCP server, follow up with `/modify-app`.
+**Description**: TRIGGER when user wants to connect Gmail, Google Calendar, Notion, or Drive to an existing app, OR when a `/create-app` spec declares `mcpServers`. SKIP when user wants to write the server action that calls the MCP — use `/modify-app` after this skill runs. Updates manifest only. Never writes UI or server actions.
 
 ---
+
+## Before You Start
+
+- App exists: `ls apps/<appId>/manifest.ts`
+- `serverId` is one of: `gmail`, `google-calendar`, `drive`, `notion`
+- App does NOT already declare this server (check `mcpServers` in its manifest)
+
+If the app doesn't exist, run `/create-app` first.
 
 ## Overview
 
@@ -61,3 +69,8 @@ implementation pattern using experimental_createMCPClient + streamText from 'ai'
 - Only `/add-mcp` updates the manifest — it does NOT write server actions or UI
 - The hub will show an orange badge on `<appId>` until the env vars are configured
 - See docs/mcp.md for the full integration guide
+
+## Reference
+
+- Full integration guide: `docs/mcp.md`
+- Canonical server action implementation: `app/apps/daily-briefing/actions.ts`

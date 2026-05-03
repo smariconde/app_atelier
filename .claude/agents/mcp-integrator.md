@@ -120,3 +120,11 @@ Setup:
 - Never modify `app/manifest.ts`, `app/apps/hub/page.tsx`, or any route file
 - Never run `vercel` or deployment commands
 - The manifest edit must preserve all existing fields exactly
+
+## Reference
+
+- Integration architecture: `docs/mcp.md`
+- Canonical server action: `app/apps/daily-briefing/actions.ts`
+  (`experimental_createMCPClient`, `StreamableHTTPClientTransport`, `streamText`, `createStreamableValue`)
+- Canonical streaming page: `app/apps/daily-briefing/page.tsx`
+  (`readStreamableValue`, client component pattern)

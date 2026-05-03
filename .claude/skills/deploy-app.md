@@ -2,7 +2,7 @@
 
 **Trigger**: `/deploy-app`
 
-**Description**: Deploys AppAtelier to Vercel production. Runs doctor + build checks, then deploys with user approval gate before going live. Generates DNS instructions for wildcard subdomain setup.
+**Description**: TRIGGER when user says "deploy", "ship", "push to production", or asks to go live. SKIP for audit-only requests — use `/pwa-audit` instead. SKIP for per-app deploys — there are none; this always deploys the entire platform. Requires explicit approval before going live.
 
 ---
 

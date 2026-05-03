@@ -299,6 +299,18 @@ Required env vars by server:
 - `notion` → `NOTION_MCP_TOKEN`
 - All AI actions → `ANTHROPIC_API_KEY`
 
+## Common pitfalls (read before implementing)
+
+**Schema import path**: The three-dot relative path `'../../../apps/<appId>/db/schema'` from `app/apps/<appId>/` is non-obvious. Getting this wrong produces a silent type error at build time, not a runtime error.
+
+**FormData field names**: The `name` attribute on an HTML input must exactly match the key used in `formData.get(...)`. A mismatch produces an empty string in the database, not an error.
+
+**Next.js 15 async params**: `params` in `[id]/page.tsx` is a `Promise<{ id: string }>` — always `await params` before destructuring. Missing the await is a deprecation warning today and a breaking error in future versions.
+
+**Empty state is mandatory**: Always include `<EmptyState>` when the list is empty. Omitting it produces a blank void that looks like a broken app.
+
+**revalidatePath scope**: `revalidatePath('/')` invalidates the hub, not the app. Always use `revalidatePath('/apps/<appId>')` — the internal Next.js route path, not the subdomain URL.
+
 ## Never do these things
 
 - Never use `useState` or client-side fetch for data that can be server-rendered
