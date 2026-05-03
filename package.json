@@ -13,6 +13,7 @@
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
     "new-app": "tsx scripts/new-app.ts",
+    "delete-app": "tsx scripts/delete-app.ts",
     "doctor": "tsx scripts/doctor.ts",
     "studio-status": "tsx scripts/studio-status.ts",
     "generate-icons": "tsx scripts/generate-icons.ts",

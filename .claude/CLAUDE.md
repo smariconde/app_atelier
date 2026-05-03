@@ -34,6 +34,7 @@ Skills are invoked with `/skill-name` in the Claude Code UI.
 | `/deploy-app` | Vercel deploy + DNS instructions + preflight gate |
 | `/pwa-audit` | Lighthouse + manifest validation |
 | `/add-mcp` | Connect an MCP server to an existing app |
+| `/delete-app` | Remove an app and all its files with a confirmation gate |
 
 ## Hooks (`.claude/settings.json`)
 

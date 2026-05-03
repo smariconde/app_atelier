@@ -13,8 +13,9 @@ pnpm typecheck        # type-check everything
 pnpm lint             # lint everything
 pnpm db:setup         # create local.db + all tables (first-time)
 pnpm db:reset         # drop + recreate local.db
-pnpm new-app <name>   # scaffold a new app from _template
-pnpm doctor           # validate all manifests, schemas, PWA configs
+pnpm new-app <name>      # scaffold a new app from _template
+pnpm delete-app <name>   # remove an app and all its files
+pnpm doctor              # validate all manifests, schemas, PWA configs
 pnpm generate-icons   # --input <1024px.png> --app <id> → public/ icons
 pnpm audit            # --url <https://yourdomain.com> → Lighthouse scores for all apps
 ```
@@ -35,7 +36,7 @@ packages/@hub/auth      ← Better Auth, cross-subdomain SSO
 packages/@hub/ui        ← shadcn/ui components, dark mode
 packages/@hub/pwa       ← buildPWAManifest, InstallPrompt
 .claude/                ← agents and skills (AI studio)
-scripts/                ← new-app, db-*, generate-icons, doctor, audit
+scripts/                ← new-app, delete-app, db-*, generate-icons, doctor, audit
 lighthouserc.js         ← Lighthouse CI thresholds (≥90 all categories)
 vercel.json             ← Vercel project config (single project, Next.js framework)
 ```

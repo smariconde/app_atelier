@@ -185,3 +185,45 @@ pnpm dev        # start the dev server
 ```
 
 Open `http://<name>.localhost:3000` — you should see your app. Open `http://localhost:3000` — you should see your app's icon in the hub.
+
+---
+
+## Deleting apps
+
+### The fast way: `/delete-app`
+
+Type `/delete-app <appId>` in Claude Code. The skill shows a full summary of what will be removed, asks for confirmation, then calls the script. Safe by default — nothing is deleted until you type "yes".
+
+### The manual way
+
+```bash
+pnpm delete-app <name>
+```
+
+The script removes all artifacts for the given app and verifies with `pnpm doctor` at the end. Run with `--yes` to skip the interactive prompt (useful in scripts):
+
+```bash
+pnpm delete-app finance --yes
+```
+
+**What gets deleted:**
+
+| Artifact | Location |
+|---|---|
+| Workspace package | `apps/<name>/` |
+| Next.js routes | `app/apps/<name>/` |
+| PWA icons | `public/<name>-icon-*.png` |
+| Manifest registry entry | `app/manifest.ts` |
+| Hub launcher entry | `app/apps/hub/page.tsx` |
+
+**What is NOT deleted automatically:**
+
+Database tables are left intact. If you want to drop them, run `pnpm db:reset` — this drops and recreates tables for all remaining apps. There is no per-app table drop command by design, to avoid accidental data loss.
+
+**To undo a deletion** (before committing):
+
+```bash
+git restore apps/<name>/ app/apps/<name>/
+# PWA icons are not tracked by git — regenerate with:
+pnpm generate-icons --app <name> --input <1024px.png>
+```

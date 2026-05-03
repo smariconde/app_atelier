@@ -44,6 +44,7 @@ Skills are slash commands in Claude Code. Type them in the chat prompt.
 | `/deploy-app` | `/deploy-app` | Vercel production deploy with preflight gate |
 | `/pwa-audit` | `/pwa-audit` | Lighthouse + manifest validation for all apps |
 | `/add-mcp` | `/add-mcp <appId> <serverId>` | Connect a MCP server (gmail, notion, etc.) to an existing app |
+| `/delete-app` | `/delete-app <appId>` | Permanently remove an app — shows deletion summary + confirmation gate |
 
 ---
 
@@ -117,7 +118,7 @@ Edit manually when:
 
 ## Approval gates summary
 
-Three gates in `/create-app`, two in `/modify-app`, one in `/deploy-app`:
+Three gates in `/create-app`, two in `/modify-app`, one each in `/deploy-app` and `/delete-app`:
 
 | Gate | Skill | What you're approving |
 |---|---|---|
@@ -127,3 +128,4 @@ Three gates in `/create-app`, two in `/modify-app`, one in `/deploy-app`:
 | Change plan review | `/modify-app` | The tech-lead's plan before any files are modified |
 | Completion | `/modify-app` | Final sign-off after implementation + validation |
 | Pre-deploy preflight | `/deploy-app` | QA audit results before `vercel --prod` runs |
+| Deletion confirmation | `/delete-app` | Full summary of what will be removed before `pnpm delete-app --yes` runs |
