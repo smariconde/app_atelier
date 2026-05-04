@@ -1,34 +1,20 @@
-# /modify-app skill
-
-**Trigger**: `/modify-app <appId> [description of change]`
-
-**Description**: Safely modifies an existing AppAtelier app. A tech-lead plans the change before any code is written, with a user approval gate. Supports UI changes, new features, and schema evolution.
-
+---
+name: modify-app
+description: "TRIGGER when user wants to change, update, fix, or add features to an existing app. Safely modifies an existing AppAtelier app with a tech-lead change plan and user approval gate. SKIP for new apps — use /create-app instead. SKIP for theme/color changes — use /theme-app instead."
+argument-hint: "<appId> [description of change]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Agent
+agent: tech-lead
 ---
 
-## Before You Start
+## Agents used
 
-- App exists: `ls apps/<appId>/`
-- Dev server running: `pnpm dev`
-- No conflicting uncommitted changes: `git status`
+- `tech-lead` — reads the app and produces a change plan
+- `app-builder` — implements the approved changes
+- `db-migrator` — applies schema migration (only if schema changed)
+- `pwa-specialist` — validates PWA health after changes
 
-If the app doesn't exist, use `/create-app` instead.
-
-## Change type — guide for invoking tech-lead
-
-Pre-classify the change before invoking tech-lead so it can confirm or correct:
-
-```
-Is this UI only? (labels, layout, copy, color)
-├── YES → Schema Changes: NO. db-migrator skipped.
-└── NO: Does it add/remove data fields?
-    ├── YES → Schema Changes: YES. db-migrator WILL run.
-    └── NO: Does it add a new page/route?
-        ├── YES → Likely no schema change. tech-lead confirms.
-        └── NO → Probably UI-only.
-```
-
-Include this classification in your context to tech-lead.
+---
 
 ## Overview
 
@@ -45,7 +31,21 @@ Two approval gates protect existing apps:
 
 ---
 
-## Phase 1 — Change Planning
+## Phase 1 — Classify the change
+
+Before invoking tech-lead, use AskUserQuestion to pre-classify the change type so tech-lead gets accurate context:
+
+> "What kind of change is this?"
+> - UI only (labels, layout, copy, color)
+> - Adds or removes data fields (schema change likely)
+> - Adds a new page or route
+> - Mixed / unsure — let tech-lead decide
+
+Include the user's answer in the context passed to tech-lead.
+
+---
+
+## Phase 2 — Change Planning
 
 **Agent**: `tech-lead`
 
@@ -55,6 +55,7 @@ Two approval gates protect existing apps:
 2. Invoke the `tech-lead` agent with:
    - The appId
    - The full change description
+   - The change-type classification from Phase 1
    - This context: "Read the existing app at `apps/<appId>/` and `app/apps/<appId>/`, then produce a change plan."
 
 3. Show the tech-lead's full output to the user.
@@ -72,7 +73,7 @@ Do not proceed to implementation until the plan is explicitly approved.
 
 ---
 
-## Phase 2 — Implementation
+## Phase 3 — Implementation
 
 **Agent**: `app-builder`
 
@@ -83,9 +84,14 @@ Invoke the `app-builder` agent with:
 
 No gate — implementation is fully reversible with `git restore`.
 
+If the agent fails, use AskUserQuestion:
+- "Retry with the same plan"
+- "Revise the plan and retry"
+- "Abort — I'll fix manually"
+
 ---
 
-## Phase 3 — Migration (conditional)
+## Phase 4 — Migration (conditional)
 
 **Agent**: `db-migrator`
 
@@ -99,7 +105,7 @@ Show the generated SQL and migration result before proceeding.
 
 ---
 
-## Phase 4 — Validation
+## Phase 5 — Validation
 
 **Agent**: `pwa-specialist`
 
@@ -121,15 +127,16 @@ Print the completion summary:
 
   App URL:  http://<appId>.localhost:3000
 
-Changes made:
+What changed:
   [list files changed, from the tech-lead plan's "Files to Change" section]
 
 Next steps:
   1. Refresh http://<appId>.localhost:3000 and test the change
   2. Check that the hub still shows the app icon
 
-To revert specific files: git restore <file>
-To revert everything: git restore app/apps/<appId>/ apps/<appId>/
+How to revert:
+  Specific files: git restore <file>
+  Everything:     git restore app/apps/<appId>/ apps/<appId>/
 ```
 
 ---

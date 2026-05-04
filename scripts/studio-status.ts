@@ -50,9 +50,14 @@ const agents = fs.existsSync(agentsDir)
 const skillsDir = path.join(root, '.claude', 'skills')
 const skills = fs.existsSync(skillsDir)
   ? fs
-      .readdirSync(skillsDir)
-      .filter((f) => f.endsWith('.md'))
-      .map((f) => '/' + f.replace('.md', ''))
+      .readdirSync(skillsDir, { withFileTypes: true })
+      .filter((entry) => {
+        if (entry.isDirectory()) {
+          return fs.existsSync(path.join(skillsDir, entry.name, 'SKILL.md'))
+        }
+        return entry.isFile() && entry.name.endsWith('.md')
+      })
+      .map((entry) => '/' + entry.name.replace(/\.md$/, ''))
       .sort()
   : []
 

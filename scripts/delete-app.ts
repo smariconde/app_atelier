@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import { execSync } from 'child_process'
+import { removeFromManifest, removeFromHub } from './lib/hub-registry'
 
 const args = process.argv.slice(2)
 const appName = args.find((a) => !a.startsWith('--'))
@@ -16,19 +17,9 @@ if (!appName) {
 
 const appId = appName.toLowerCase().replace(/[^a-z0-9-]/g, '-')
 
-function toCamelCase(str: string): string {
-  return str.replace(/-([a-z])/g, (_: string, c: string) => c.toUpperCase())
-}
-
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
-
 const root = path.resolve(process.cwd())
 const workspaceDir = path.join(root, 'apps', appId)
 const nextDir = path.join(root, 'app', 'apps', appId)
-const manifestFile = path.join(root, 'app', 'manifest.ts')
-const hubFile = path.join(root, 'app', 'apps', 'hub', 'page.tsx')
 
 // ─── Validate ────────────────────────────────────────────────────────────────
 
@@ -82,10 +73,6 @@ if (!yes) {
 // ─── Deletion ────────────────────────────────────────────────────────────────
 
 function run() {
-  const varName = toCamelCase(appId) + 'App'
-  const safeId = escapeRegex(appId)
-  const safeVar = escapeRegex(varName)
-
   // 1. Delete workspace package
   fs.removeSync(workspaceDir)
   console.log(`✓ Removed apps/${appId}/`)
@@ -102,46 +89,11 @@ function run() {
     console.log(`✓ Removed public/${path.basename(f)}`)
   }
 
-  // 4. Edit app/manifest.ts
-  let manifestContent = fs.readFileSync(manifestFile, 'utf-8')
-
-  // Remove import line (e.g. import dailyBriefingApp from '../apps/daily-briefing/manifest')
-  manifestContent = manifestContent.replace(
-    new RegExp(`\nimport ${safeVar} from '\\.\\.\/apps\/${safeId}\/manifest'`),
-    '',
-  )
-
-  // Remove registry entry (handles both `notes: notesApp,` and `'daily-briefing': dailyBriefingApp,`)
-  manifestContent = manifestContent.replace(
-    new RegExp(`\n  ['"]?${safeId}['"]?: ${safeVar},`),
-    '',
-  )
-
-  fs.writeFileSync(manifestFile, manifestContent)
+  // 4. Edit registry files via shared helper
+  removeFromManifest(appId)
   console.log('✓ Updated app/manifest.ts')
 
-  // 5. Edit app/apps/hub/page.tsx
-  let hubContent = fs.readFileSync(hubFile, 'utf-8')
-
-  // Remove import line
-  hubContent = hubContent.replace(
-    new RegExp(`\nimport ${safeVar} from '\\.\\.\\/\\.\\.\\/\\.\\.\\/apps\\/${safeId}\\/manifest'`),
-    '',
-  )
-
-  // Remove from apps array
-  hubContent = hubContent.replace(
-    /const apps: AppManifest\[\] = \[([^\]]*)\]/,
-    (_: string, inner: string) => {
-      const entries = inner
-        .split(',')
-        .map((s: string) => s.trim())
-        .filter((s: string) => s && s !== varName)
-      return `const apps: AppManifest[] = [${entries.join(', ')}]`
-    },
-  )
-
-  fs.writeFileSync(hubFile, hubContent)
+  removeFromHub(appId)
   console.log('✓ Updated app/apps/hub/page.tsx')
 
   // 6. Verify

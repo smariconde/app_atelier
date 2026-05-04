@@ -116,7 +116,7 @@ Setup:
 
 ## Rules
 
-- Only edit `apps/<appId>/manifest.ts` — nothing else
+- Only edit `apps/<appId>/manifest.ts` — nothing else (see `.claude/rules/manifest-contract.md` for edit rules)
 - Never modify `app/manifest.ts`, `app/apps/hub/page.tsx`, or any route file
 - Never run `vercel` or deployment commands
 - The manifest edit must preserve all existing fields exactly

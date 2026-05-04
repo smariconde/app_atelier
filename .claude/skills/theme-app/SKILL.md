@@ -1,8 +1,17 @@
-# /theme-app skill
+---
+name: theme-app
+description: "TRIGGER when user wants to change the look, feel, color, icon, or visual identity of an existing app. Changes brand color, CSS palette, icon, and typography. SKIP for code or feature changes — use /modify-app instead."
+argument-hint: "<appId> [theme description]"
+user-invocable: true
+allowed-tools: Read, Glob, Agent
+agent: design-lead
+---
 
-**Trigger**: `/theme-app <appId> [theme description]`
+## Agents used
 
-**Description**: Changes the visual identity of an existing AppAtelier app — brand color, CSS palette, icon, and typography emphasis. A design-lead makes all creative decisions; a ui-designer implements them. Two approval gates protect existing apps.
+- `design-lead` — produces a theme brief with color, icon, typography decisions
+- `ui-designer` — implements CSS variable overrides and manifest update
+- `pwa-specialist` — validates manifest colors and icon after changes
 
 ---
 
@@ -22,8 +31,16 @@
 
 **Agent**: `design-lead`
 
-1. Extract the `appId` from the command. If no theme description was provided, ask:
-   > "How do you want `<appId>` to feel? (e.g., 'calm and focused', 'bold and energetic', 'nature-inspired', 'minimal')"
+1. Extract the `appId` from the command. If no theme description was provided, use AskUserQuestion:
+
+   > "How do you want `<appId>` to feel?"
+   > - Calm & focused (muted blues, generous whitespace)
+   > - Bold & energetic (vivid accent, strong contrast)
+   > - Nature-inspired (greens, earthy tones)
+   > - Minimal (near-neutral, typography-forward)
+   > - Other — I'll describe it
+
+   If "Other", ask the user to type their description before proceeding.
 
 2. Invoke the `design-lead` agent with:
    - The appId
@@ -84,7 +101,7 @@ Theme applied:
   Brand color: <hex>
   Icon:        <lucide-icon-name>
 
-Files changed:
+What changed:
   - app/apps/<appId>/layout.tsx  (CSS variable overrides)
   - apps/<appId>/manifest.ts     (icon, color, themeColor)
 
@@ -93,7 +110,8 @@ Next steps:
   2. If you want a custom app icon image:
        pnpm generate-icons --app <appId> --input <your-1024px.png>
 
-To revert: git restore app/apps/<appId>/layout.tsx apps/<appId>/manifest.ts
+How to revert:
+  git restore app/apps/<appId>/layout.tsx apps/<appId>/manifest.ts
 ```
 
 ---

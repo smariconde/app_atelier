@@ -24,18 +24,7 @@ Read:
 
 ### Step 2 — Update `apps/<appId>/db/schema.ts`
 
-Apply the exact column additions or modifications from the change plan.
-
-Column type rules:
-- `text` — IDs, strings, enum-like values
-- `integer` — timestamps (Unix ms via `Date.now()`), booleans (0/1), counts
-- `real` — floats/decimals
-
-Safety rules (enforce without exception):
-- **Adding a column**: make it nullable unless the plan explicitly specifies a default (`$defaultFn`, `.default(value)`)
-- **Never DROP** a column — only add or modify
-- **Table prefix**: every table name must start with `<appId>_` — reject any change that would create tables without it
-- **createdAt / updatedAt**: use `integer` (Unix timestamp), set via `$defaultFn(() => Date.now())`
+Apply the exact column additions or modifications from the change plan. Follow `.claude/rules/db-schema.md` for column types, table-prefix enforcement, and migration safety rules (never DROP, nullable adds, etc.).
 
 ### Step 3 — Ensure drizzle.config.ts exists for this app
 
@@ -105,7 +94,6 @@ Report the result clearly.
 ## Rules
 
 - Always generate + migrate (not just push) to maintain versioned migration history in source control
-- Never remove existing columns — only add
 - Show the SQL before applying — no silent migrations
 - If migration fails, report the full error and suggest manual resolution steps
-- The table prefix `<appId>_` is non-negotiable — flag violations immediately
+- See `.claude/rules/db-schema.md` for column conventions, table prefix rule, and what is/isn't allowed

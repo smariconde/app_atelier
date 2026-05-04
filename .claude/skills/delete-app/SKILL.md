@@ -1,20 +1,10 @@
-# /delete-app skill
-
-**Trigger**: `/delete-app <appId>`
-
-**Description**: Permanently removes an AppAtelier app — workspace package, Next.js routes, PWA icons, and all registry entries. One confirmation gate before any files are touched.
-
 ---
-
-## Before You Start
-
-Check that the app exists and that there are no uncommitted changes you want to keep:
-
-```bash
-ls apps/<appId>/
-git status
-```
-
+name: delete-app
+description: "Permanently removes an AppAtelier app — workspace package, Next.js routes, PWA icons, and all registry entries. One confirmation gate before any files are touched. NEVER use on hub or _template."
+argument-hint: "<appId>"
+user-invocable: true
+allowed-tools: Read, Bash
+agent: none
 ---
 
 ## Overview
@@ -23,7 +13,7 @@ One confirmation gate protects against accidental deletion:
 
 ```
 [/delete-app <appId>] → show deletion summary
-                              ↓ GATE: user confirms
+                              ↓ GATE: user types appId to confirm
                         pnpm delete-app <appId> --yes
                         pnpm doctor (automatic)
 ```
@@ -50,13 +40,13 @@ About to permanently delete: <appId>
   DB schema:   yes / no
 
 Files that will be removed:
-  apps/<appId>/           (workspace package + manifest)
-  app/apps/<appId>/       (Next.js routes)
+  apps/<appId>/              (workspace package + manifest)
+  app/apps/<appId>/          (Next.js routes)
   public/<appId>-icon-*.png  (PWA icons, if present)
 
 Registry entries that will be removed:
-  app/manifest.ts         (import + registry entry)
-  app/apps/hub/page.tsx   (import + apps array entry)
+  app/manifest.ts            (import + registry entry)
+  app/apps/hub/page.tsx      (import + apps array entry)
 
 ⚠  Database tables will NOT be dropped automatically.
    If you want to clean up DB tables, run: pnpm db:reset
@@ -67,11 +57,11 @@ Registry entries that will be removed:
 
 ## Gate: Confirmation
 
-Ask explicitly:
+Ask explicitly — do NOT use AskUserQuestion here (destructive actions require typed confirmation):
 
-> "Type **yes** to permanently delete `<appId>`, or **no** to cancel."
+> "Type **`<appId>`** to permanently delete this app, or anything else to cancel."
 
-Wait for the user's reply. Do not proceed until they confirm. If they say no or anything other than yes, print "Aborted." and stop.
+Wait for the user's reply. Only proceed if they type exactly `<appId>`. Otherwise print "Aborted." and stop.
 
 ---
 
@@ -101,8 +91,8 @@ Print the completion summary:
 ```
 ✓ <appId> deleted.
 
-The app has been fully removed from the codebase.
-The hub will no longer show its icon.
+  The app has been fully removed from the codebase.
+  The hub will no longer show its icon.
 
 Database note:
   Tables prefixed with "<appId>_" still exist in the database.
@@ -130,4 +120,4 @@ To commit:
 |---|---|
 | App not found | Confirm appId with `pnpm studio-status` |
 | Doctor fails after deletion | Show doctor output; likely a stale import — ask user if they want to fix manually |
-| User wants to undo | `git restore apps/<appId>/ app/apps/<appId>/` — but icons are gone; they'd need `pnpm generate-icons` again |
+| User wants to undo | `git restore apps/<appId>/ app/apps/<appId>/` — icons are gone; they'd need `pnpm generate-icons` again |

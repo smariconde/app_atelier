@@ -1,8 +1,19 @@
-# /create-app skill
+---
+name: create-app
+description: "TRIGGER when user wants to build a new app, mentions an app idea, or says 'create', 'new app', 'build'. Full lifecycle from a plain-language brief to a working, installable PWA. SKIP for modifying existing apps — use /modify-app instead."
+argument-hint: "[app idea]"
+user-invocable: true
+allowed-tools: Read, Bash, Agent
+agent: product-lead
+---
 
-**Trigger**: `/create-app [optional app idea]`
+## Agents used
 
-**Description**: Full lifecycle from a plain-language brief to a working, installable PWA. Orchestrates four specialized agents across four phases with explicit user approval gates between them.
+- `product-lead` — brief → spec.md
+- `app-architect` — scaffold + registry + db
+- `mcp-integrator` — MCP wiring (only if spec declares mcpServers)
+- `app-builder` — pages + server actions
+- `pwa-specialist` — PWA validation
 
 ---
 
@@ -109,6 +120,11 @@ Do not proceed to Phase 3 until the user confirms the app loads.
 
 3. No approval gate — implementation is fully reversible. Show the agent's completion summary.
 
+If the agent fails, use AskUserQuestion to clarify recovery:
+- "Retry with the same inputs"
+- "Edit the spec first, then retry"
+- "Abort and fix manually"
+
 ---
 
 ## Phase 4 — PWA Validation
@@ -159,7 +175,7 @@ Agents available for fixes:
 - **Never** use path-based routing — the app lives at `<appId>.localhost:3000`, not `/tasks`
 - **Always** table prefix = `<appId>_` (e.g., `tasks_tasks`, not just `tasks`)
 - **Hub is a launcher** — never add widgets or data summaries to the hub
-- **Single user** — no authentication, no multi-tenancy in v0.2 apps
+- **Single user** — no authentication, no multi-tenancy
 - **One dev server** — all apps run from the same `pnpm dev` process
 
 ---

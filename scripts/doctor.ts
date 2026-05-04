@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import fs from 'fs-extra'
 import path from 'path'
+import { addToManifest, addToHub } from './lib/hub-registry'
 
 const root = process.cwd()
 const args = process.argv.slice(2)
@@ -15,10 +16,6 @@ const MCP_REQUIRED_VARS: Record<string, string[]> = {
 
 let errors = 0
 let fixed = 0
-
-function toCamelCase(str: string): string {
-  return str.replace(/-([a-z])/g, (_: string, c: string) => c.toUpperCase())
-}
 
 function check(condition: boolean, message: string, fixFn?: () => boolean) {
   if (condition) {
@@ -44,70 +41,11 @@ function check(condition: boolean, message: string, fixFn?: () => boolean) {
 }
 
 function fixManifestRegistry(appDir: string): boolean {
-  const manifestPath = path.join(root, 'app/manifest.ts')
-  let content = fs.readFileSync(manifestPath, 'utf-8')
-  const varName = toCamelCase(appDir) + 'App'
-
-  if (!content.includes(`from '../apps/${appDir}/manifest'`)) {
-    const matches = [...content.matchAll(/^import \w+App from '\.\.\/apps\/[^']+\/manifest'$/gm)]
-    if (matches.length === 0) return false
-    const last = matches[matches.length - 1]
-    const insertAt = last.index! + last[0].length
-    content =
-      content.slice(0, insertAt) +
-      `\nimport ${varName} from '../apps/${appDir}/manifest'` +
-      content.slice(insertAt)
-  }
-
-  if (!content.includes(`  ${appDir}:`)) {
-    const entryMatches = [...content.matchAll(/^  \w[\w-]*: \w+App,$/gm)]
-    if (entryMatches.length === 0) return false
-    const last = entryMatches[entryMatches.length - 1]
-    const insertAt = last.index! + last[0].length
-    content =
-      content.slice(0, insertAt) +
-      `\n  ${appDir}: ${varName},` +
-      content.slice(insertAt)
-  }
-
-  fs.writeFileSync(manifestPath, content)
-  return true
+  try { addToManifest(appDir); return true } catch { return false }
 }
 
 function fixHubPage(appDir: string): boolean {
-  const hubPath = path.join(root, 'app/apps/hub/page.tsx')
-  let content = fs.readFileSync(hubPath, 'utf-8')
-  const varName = toCamelCase(appDir) + 'App'
-
-  if (!content.includes(`from '../../../apps/${appDir}/manifest'`)) {
-    const matches = [
-      ...content.matchAll(/^import \w+App from '\.\.\/\.\.\/\.\.\/apps\/[^']+\/manifest'$/gm),
-    ]
-    if (matches.length === 0) return false
-    const last = matches[matches.length - 1]
-    const insertAt = last.index! + last[0].length
-    content =
-      content.slice(0, insertAt) +
-      `\nimport ${varName} from '../../../apps/${appDir}/manifest'` +
-      content.slice(insertAt)
-  }
-
-  if (!content.includes(varName)) {
-    content = content.replace(
-      /const apps: AppManifest\[\] = \[([^\]]*)\]/,
-      (_: string, inner: string) => {
-        const entries = inner
-          .split(',')
-          .map((s: string) => s.trim())
-          .filter(Boolean)
-        if (!entries.includes(varName)) entries.push(varName)
-        return `const apps: AppManifest[] = [${entries.join(', ')}]`
-      },
-    )
-  }
-
-  fs.writeFileSync(hubPath, content)
-  return true
+  try { addToHub(appDir); return true } catch { return false }
 }
 
 console.log(`Running doctor checks${fixMode ? ' (--fix mode)' : ''}...\n`)
@@ -235,6 +173,45 @@ if (fs.existsSync(appsDir)) {
             console.log(`  ⚠ MCP "${id}" not configured (${required.join(', ')} — see docs/mcp.md)`)
           }
         }
+      }
+    }
+  }
+}
+
+// ─── Studio skill validation ──────────────────────────────────────────────────
+
+const skillsDir = path.join(root, '.claude', 'skills')
+const agentsDir = path.join(root, '.claude', 'agents')
+
+if (fs.existsSync(skillsDir) && fs.existsSync(agentsDir)) {
+  const knownAgents = fs
+    .readdirSync(agentsDir)
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => f.replace(/\.md$/, ''))
+
+  const skillDirs = fs
+    .readdirSync(skillsDir)
+    .filter((d) => fs.statSync(path.join(skillsDir, d)).isDirectory())
+
+  console.log('\nStudio skills:')
+  for (const skill of skillDirs) {
+    const skillFile = path.join(skillsDir, skill, 'SKILL.md')
+    check(fs.existsSync(skillFile), `skills/${skill}/SKILL.md exists`)
+
+    if (fs.existsSync(skillFile)) {
+      const content = fs.readFileSync(skillFile, 'utf-8')
+      check(content.includes('name:'), `skills/${skill}/SKILL.md has 'name:' frontmatter`)
+      check(content.includes('description:'), `skills/${skill}/SKILL.md has 'description:' frontmatter`)
+
+      // Check 'agent: <name>' references point to known agents ('none' is a valid sentinel)
+      const agentRefs = [...content.matchAll(/^agent:\s*(\S+)/gm)]
+        .map((m) => m[1])
+        .filter((r) => r !== 'none')
+      for (const ref of agentRefs) {
+        check(
+          knownAgents.includes(ref),
+          `skills/${skill}: referenced agent '${ref}' exists in .claude/agents/`,
+        )
       }
     }
   }

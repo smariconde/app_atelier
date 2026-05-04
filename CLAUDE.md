@@ -1,6 +1,6 @@
 # CLAUDE.md — AppAtelier
 
-**v1.0 shipped.** One Next.js project, one Vercel deploy, wildcard subdomain routing. Each app is an independent PWA at its own subdomain. The hub at the root domain is a launcher (icon grid only). Full 9-agent studio with MCP support. Deploy with `/deploy-app`; audit Lighthouse scores with `/pwa-audit`.
+**v1.0 shipped.** One Next.js project, one Vercel deploy, wildcard subdomain routing. Each app is an independent PWA at its own subdomain. The hub at the root domain is a launcher (icon grid only). Full 12-agent studio with MCP support. Deploy with `/deploy-app`; audit Lighthouse scores with `/pwa-audit`.
 
 ---
 
@@ -15,7 +15,7 @@ pnpm db:setup         # create local.db + all tables (first-time)
 pnpm db:reset         # drop + recreate local.db
 pnpm new-app <name>      # scaffold a new app from _template
 pnpm delete-app <name>   # remove an app and all its files
-pnpm doctor              # validate all manifests, schemas, PWA configs
+pnpm doctor              # validate manifests, schemas, PWA configs, and skill structure
 pnpm generate-icons   # --input <1024px.png> --app <id> → public/ icons
 pnpm audit            # --url <https://yourdomain.com> → Lighthouse scores for all apps
 ```
@@ -35,8 +35,9 @@ packages/@hub/db        ← Drizzle ORM + SQLite adapter
 packages/@hub/auth      ← Better Auth, cross-subdomain SSO
 packages/@hub/ui        ← shadcn/ui components, dark mode
 packages/@hub/pwa       ← buildPWAManifest, InstallPrompt
-.claude/                ← agents and skills (AI studio)
+.claude/                ← agents, skills, rules, docs (AI studio)
 scripts/                ← new-app, delete-app, db-*, generate-icons, doctor, audit
+  lib/                  ← shared helpers (hub-registry)
 lighthouserc.js         ← Lighthouse CI thresholds (≥90 all categories)
 vercel.json             ← Vercel project config (single project, Next.js framework)
 ```

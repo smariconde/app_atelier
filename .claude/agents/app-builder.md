@@ -53,48 +53,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
 ### Step 4 — Implement `app/apps/<appId>/actions.ts`
 
-```typescript
-'use server'
-import { revalidatePath } from 'next/cache'
-import { getDb } from '@hub/db'
-import { <entityTable> } from '../../../apps/<appId>/db/schema'
-import { eq } from 'drizzle-orm'
-import { createId } from '@paralleldrive/cuid2'
-
-export async function create<Entity>(formData: FormData) {
-  const db = getDb()
-  // extract fields from formData
-  await db.insert(<entityTable>).values({
-    id: createId(),
-    // ... fields from spec
-  })
-  revalidatePath('/apps/<appId>')
-}
-
-export async function update<Entity>(id: string, formData: FormData) {
-  const db = getDb()
-  // extract fields from formData
-  await db.update(<entityTable>)
-    .set({ /* fields */, updatedAt: new Date() })
-    .where(eq(<entityTable>.id, id))
-  revalidatePath('/apps/<appId>')
-}
-
-export async function delete<Entity>(id: string) {
-  const db = getDb()
-  await db.delete(<entityTable>).where(eq(<entityTable>.id, id))
-  revalidatePath('/apps/<appId>')
-}
-```
-
-Import `eq` from `drizzle-orm`. Add any additional actions the spec calls for.
-
-**revalidatePath rule (critical)**: Always use the internal route path, not the subdomain URL:
-```typescript
-revalidatePath('/apps/<appId>')  // ✓ correct — matches Next.js internal route
-revalidatePath('/')              // ✗ wrong — that's the hub
-revalidatePath('https://...')   // ✗ wrong — subdomain URLs don't work here
-```
+Follow `.claude/rules/server-actions.md` for the required patterns: `'use server'`, `revalidatePath('/apps/<appId>')` (internal route only), schema import path, and FormData field-name matching.
 
 ### Step 5 — Implement `app/apps/<appId>/page.tsx`
 
@@ -299,26 +258,20 @@ Required env vars by server:
 - `notion` → `NOTION_MCP_TOKEN`
 - All AI actions → `ANTHROPIC_API_KEY`
 
-## Common pitfalls (read before implementing)
+## Common pitfalls
 
-**Schema import path**: The three-dot relative path `'../../../apps/<appId>/db/schema'` from `app/apps/<appId>/` is non-obvious. Getting this wrong produces a silent type error at build time, not a runtime error.
+See `.claude/rules/server-actions.md` for schema import path, revalidatePath scope, and FormData field-name rules.
 
-**FormData field names**: The `name` attribute on an HTML input must exactly match the key used in `formData.get(...)`. A mismatch produces an empty string in the database, not an error.
-
-**Next.js 15 async params**: `params` in `[id]/page.tsx` is a `Promise<{ id: string }>` — always `await params` before destructuring. Missing the await is a deprecation warning today and a breaking error in future versions.
+**Next.js 15 async params**: `params` in `[id]/page.tsx` is a `Promise<{ id: string }>` — always `await params` before destructuring.
 
 **Empty state is mandatory**: Always include `<EmptyState>` when the list is empty. Omitting it produces a blank void that looks like a broken app.
-
-**revalidatePath scope**: `revalidatePath('/')` invalidates the hub, not the app. Always use `revalidatePath('/apps/<appId>')` — the internal Next.js route path, not the subdomain URL.
 
 ## Never do these things
 
 - Never use `useState` or client-side fetch for data that can be server-rendered
-- Never create API routes — use server actions
+- Never create API routes — use server actions (see `.claude/rules/server-actions.md`)
 - Never use `useEffect` for data loading
 - Never create a local `delete-button.tsx` — use `<DeleteButton>` from `@hub/ui`
 - Never use inline `onClick` confirm dialogs — use `<DeleteButton confirmMessage="...">`
 - Never import from `@hub/ui/components/button` or other sub-paths — always `import { ... } from '@hub/ui'`
-- Never use path-based routing to other apps — always full URLs for cross-app links
-- Never hardcode `localhost:3000` — use `process.env.NEXT_PUBLIC_DOMAIN ?? 'localhost:3000'`
-- Never import from `@hub/auth` — auth UI is unenforced and not on the current roadmap
+- See `.claude/rules/hub-constraint.md` for cross-app links and domain conventions

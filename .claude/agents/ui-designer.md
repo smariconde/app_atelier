@@ -80,3 +80,5 @@ Do NOT rewrite the entire manifest — use targeted Edit replacements only.
 - Never modify: `page.tsx`, `actions.ts`, schema files, or any file outside the two listed above
 - Never import external fonts — system font stack only
 - The `:root` selector in the `<style>` tag is correct — it scopes naturally to the component tree rendered under this layout
+- After changing `color` in manifest.ts, warn that icons must be regenerated (`pnpm generate-icons`) — see `.claude/rules/pwa.md`
+- See `.claude/rules/manifest-contract.md` for edit rules (use Edit, never rewrite the whole manifest)

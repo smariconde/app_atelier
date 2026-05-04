@@ -21,13 +21,14 @@ Agents are sub-agents invoked by skills or directly. Each has a markdown definit
 | `deployer` | Vercel deploy — single project only, never per-app |
 | `qa-auditor` | Lighthouse + PWA manifest validation, blocks deploy if score < 90 |
 
+Invoke the `architecture` agent directly via `@architecture` for codebase Q&A.
+
 ## Skills (`.claude/skills/`)
 
 Skills are invoked with `/skill-name` in the Claude Code UI.
 
 | Skill | Purpose |
 |---|---|
-| `/architecture` | Knowledge-only Q&A |
 | `/create-app` | Full lifecycle: brief → spec → scaffold → implement → PWA |
 | `/modify-app` | Safely edit an existing app with tech-lead change plan |
 | `/theme-app` | Change palette, icon, typography via design-lead + ui-designer |
@@ -36,6 +37,26 @@ Skills are invoked with `/skill-name` in the Claude Code UI.
 | `/add-mcp` | Connect an MCP server to an existing app |
 | `/delete-app` | Remove an app and all its files with a confirmation gate |
 
+See `.claude/docs/workflow-catalog.md` for the full skill → agent → gate flow.
+
+## Rules (`.claude/rules/`)
+
+Per-domain coding constraints referenced by agents. Editing a rule propagates to all agents that reference it.
+
+| Rule | Covers |
+|---|---|
+| `manifest-contract.md` | App manifest required fields and edit rules |
+| `db-schema.md` | Table prefix rule, column types, migration safety |
+| `server-actions.md` | `'use server'`, revalidatePath, schema import path |
+| `pwa.md` | Icon files, InstallPrompt, service worker notes |
+| `hub-constraint.md` | Single Vercel project, subdomains, registry sync, protected dirs |
+
+## Docs (`.claude/docs/`)
+
+| Doc | Purpose |
+|---|---|
+| `workflow-catalog.md` | Skill → agent → gate map (single source of truth) |
+
 ## Hooks (`.claude/settings.json`)
 
 | Hook | Trigger | Action |
@@ -43,6 +64,8 @@ Skills are invoked with `/skill-name` in the Claude Code UI.
 | PreToolUse | `Bash` with `git commit` | Runs `pnpm doctor` — blocks commit on failure |
 | PostToolUse | `Write` or `Edit` on `manifest.ts` | Reminds to regenerate icons if `pwa.icons` changed |
 | SessionStart | Session open | Runs `pnpm studio-status` to show app inventory |
+
+`pnpm doctor` also validates skill structure: every `skills/*/SKILL.md` must have `name:` + `description:` frontmatter, and any `agent:` reference must point to a real agent file.
 
 ## Key principle
 
