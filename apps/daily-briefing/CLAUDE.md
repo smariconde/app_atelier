@@ -1,30 +1,26 @@
 # apps/daily-briefing/
 
-Daily-briefing app workspace package.
+Daily Briefing app workspace package. AI-powered morning summary of Gmail and Calendar — no local database, all data comes from MCP.
 
 ## Manifest
 
 - **id / subdomain**: `daily-briefing` → `daily-briefing.localhost:3000` in dev
-- **tablePrefix**: `daily-briefing_` (all table names must start with this)
-- Edit `manifest.ts` to set `icon`, `color`, `description`, `pwa.themeColor`
+- **icon**: `sun` (Lucide)
+- **color**: `#38BDF8` (sky)
+- **status**: `experimental`
+- **MCP servers**: `gmail`, `google-calendar`
 
-## Database schema
+## Architecture
 
-`db/schema.ts` — define Drizzle tables here. Table names must start with `daily-briefing_`.
+This app has **no database** — it fetches all data live via MCP:
+- `GOOGLE_MCP_URL` + `GOOGLE_MCP_TOKEN` — Google MCP server (covers both Gmail and Calendar)
+- `ANTHROPIC_API_KEY` — Claude model for generating the briefing
+
+The server action (`app/apps/daily-briefing/actions.ts`) creates an MCP client via `@modelcontextprotocol/sdk`, fetches tools (Gmail + Calendar), then streams a briefing through `ai/rsc` using Claude.
 
 ## UI routes
 
 Pages live in `app/apps/daily-briefing/`:
-- `page.tsx` — main list/home view
-- `actions.ts` — `'use server'` CRUD server actions
-- `[id]/page.tsx` — detail/edit view (add if needed)
+- `/` (rewritten from `daily-briefing.localhost:3000`) → `page.tsx` — single-page with Generate button, streaming text output, and error display
 
-## Next steps to complete setup
-
-1. Edit `manifest.ts` — set icon, color, description
-2. Add import to `app/manifest.ts` registry
-3. Add to `app/apps/hub/page.tsx` apps array
-4. Define schema in `db/schema.ts`
-5. Run `pnpm db:setup`
-6. Run `pnpm generate-icons --app daily-briefing --input <1024px.png>`
-7. Implement `app/apps/daily-briefing/page.tsx` and `actions.ts`
+A `'use client'` page calls the `generateBriefing` server action, reads the streamable value, and renders the markdown briefing in real time.

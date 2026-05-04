@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { InstallPrompt } from '@hub/pwa'
 
 export const metadata: Metadata = {
   title: 'AppAtelier',
@@ -6,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function HubLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return <>{children}<InstallPrompt /></>
 }

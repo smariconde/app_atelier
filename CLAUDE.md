@@ -13,9 +13,13 @@ pnpm typecheck        # type-check everything
 pnpm lint             # lint everything
 pnpm db:setup         # create local.db + all tables (first-time)
 pnpm db:reset         # drop + recreate local.db
+pnpm db:migrate       # run pending Drizzle migrations
+pnpm db:generate      # generate Drizzle migration files
+pnpm db:studio        # launch Drizzle Studio (DB browser)
 pnpm new-app <name>      # scaffold a new app from _template
 pnpm delete-app <name>   # remove an app and all its files
 pnpm doctor              # validate manifests, schemas, PWA configs, and skill structure
+pnpm studio-status       # print app inventory
 pnpm generate-icons   # --input <1024px.png> --app <id> → public/ icons
 pnpm audit            # --url <https://yourdomain.com> → Lighthouse scores for all apps
 ```
@@ -30,11 +34,11 @@ app/                    ← Next.js App Router (routes, layouts, manifest, SW)
   apps/hub/             ← launcher UI
   apps/[name]/          ← each app's pages and server actions
 apps/[name]/            ← workspace package: manifest.ts + db/schema.ts
-packages/@hub/core      ← defineManifest, AppManifest type
-packages/@hub/db        ← Drizzle ORM + SQLite adapter
-packages/@hub/auth      ← Better Auth, cross-subdomain SSO
-packages/@hub/ui        ← shadcn/ui components, dark mode
-packages/@hub/pwa       ← buildPWAManifest, InstallPrompt
+packages/core           ← @hub/core — defineManifest, AppManifest type
+packages/db             ← @hub/db — Drizzle ORM + SQLite adapter
+packages/auth           ← @hub/auth — Better Auth, cross-subdomain SSO
+packages/ui             ← @hub/ui — shadcn/ui components, dark mode
+packages/pwa            ← @hub/pwa — buildPWAManifest, InstallPrompt
 .claude/                ← agents, skills, rules, docs (AI studio)
 scripts/                ← new-app, delete-app, db-*, generate-icons, doctor, audit
   lib/                  ← shared helpers (hub-registry)

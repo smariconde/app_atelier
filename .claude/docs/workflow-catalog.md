@@ -122,17 +122,6 @@ typed confirmation ("type 'deploy' to confirm")
 
 ---
 
-## `/architecture` — Read-only Q&A
-
-**Agents**: `architecture`
-
-```
-(no gate — read-only)
-  └─ architecture ──────────── reads codebase files, answers question, never writes
-```
-
----
-
 ## Agent-only (invoked by skills, not user-facing)
 
 | Agent | Invoked by | Purpose |
@@ -148,4 +137,4 @@ typed confirmation ("type 'deploy' to confirm")
 | `pwa-specialist` | `/create-app` Phase 4, `/modify-app` Phase 5, `/theme-app` Phase 3 | PWA validation + auto-fix |
 | `deployer` | `/deploy-app` | Vercel build + deploy |
 | `qa-auditor` | `/pwa-audit` | Lighthouse + manifest validation |
-| `architecture` | `/architecture` | Codebase Q&A |
+| `architecture` | `@architecture` (direct) | Codebase Q&A |

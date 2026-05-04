@@ -1,20 +1,34 @@
-# apps/_template/
+# apps/tasks/
 
-Scaffold source for `pnpm new-app <name>`. Do not add app-specific logic here.
+Tasks app workspace package. Personal task manager with priorities and due dates.
 
-## Placeholders replaced by new-app script
+## Manifest
 
-| Placeholder | Replaced with |
-|---|---|
-| `__APP_ID__` | lowercase app name (e.g. `finance`) |
-| `__APP_NAME__` | display name (e.g. `Finance`) |
+- **id / subdomain**: `tasks` → `tasks.localhost:3000` in dev
+- **icon**: `list-checks` (Lucide)
+- **color**: `#10B981` (emerald)
+- **status**: `beta`
+- **tablePrefix**: `tasks_`
 
-## After scaffolding
+## Database schema
 
-`pnpm new-app <name>` copies this directory to `apps/<name>/` and replaces placeholders. It then reminds you to:
+`db/schema.ts` — one table: `tasks_tasks`
 
-1. Edit `apps/<name>/manifest.ts` — set `icon`, `color`, `description`
-2. Add import to `app/manifest.ts` registry
-3. Add to `app/apps/hub/page.tsx` apps array
-4. Run `pnpm db:setup`
-5. Run `pnpm generate-icons --app <name> --input <1024px.png>`
+| Column | Type | Notes |
+|---|---|---|
+| `id` | text | cuid2, primary key |
+| `title` | text | required, default empty string |
+| `description` | text | default empty string |
+| `priority` | text | `low`, `medium`, or `high` — default `medium` |
+| `completed` | boolean | default false |
+| `due_date` | timestamp | nullable |
+| `created_at` | timestamp | auto-set on insert |
+| `updated_at` | timestamp | auto-set on insert |
+
+## UI routes
+
+Pages live in `app/apps/tasks/`:
+- `/` (rewritten from `tasks.localhost:3000`) → `page.tsx` — list + inline create form
+- `/[id]` → `[id]/page.tsx` — view + edit + delete
+
+Server actions in `app/apps/tasks/actions.ts`: `createTask`, `updateTask`, `deleteTask`.

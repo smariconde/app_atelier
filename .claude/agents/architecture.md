@@ -28,11 +28,11 @@ AppAtelier is a personal app platform: one Next.js codebase, one Vercel deploy, 
 
 ### Package structure
 ```
-packages/@hub/core    — defineManifest, AppManifest type
-packages/@hub/db      — Drizzle ORM + SQLite adapter
-packages/@hub/auth    — Better Auth with cross-subdomain cookies
-packages/@hub/ui      — shadcn/ui components, dark mode default
-packages/@hub/pwa     — buildPWAManifest, InstallPrompt component
+packages/core    — @hub/core — defineManifest, AppManifest type
+packages/db      — @hub/db — Drizzle ORM + SQLite adapter
+packages/auth    — @hub/auth — Better Auth with cross-subdomain cookies
+packages/ui      — @hub/ui — shadcn/ui components, dark mode default
+packages/pwa     — @hub/pwa — buildPWAManifest, InstallPrompt component
 ```
 
 ### Manifest contract
@@ -57,8 +57,8 @@ Every app's Drizzle schema MUST use `tablePrefix` from its manifest (e.g., `note
 
 When answering, read the live files — don't rely only on hardcoded facts above:
 - Routing: `middleware.ts`
-- Packages: root `package.json`, `packages/@hub/*/package.json`
+- Packages: root `package.json`, `packages/*/package.json`
 - Manifests: `apps/notes/manifest.ts` (canonical example)
-- Database: `packages/@hub/db/src/index.ts`
+- Database: `packages/db/src/index.ts`
 - Architecture overview: `docs/architecture.md`
 - Creating apps: `docs/creating-apps.md`

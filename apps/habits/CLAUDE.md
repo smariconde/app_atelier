@@ -1,30 +1,43 @@
 # apps/habits/
 
-Habits app workspace package.
+Habits app workspace package. Track daily habits and build streaks.
 
 ## Manifest
 
 - **id / subdomain**: `habits` → `habits.localhost:3000` in dev
-- **tablePrefix**: `habits_` (all table names must start with this)
-- Edit `manifest.ts` to set `icon`, `color`, `description`, `pwa.themeColor`
+- **icon**: `repeat-2` (Lucide)
+- **color**: `#F43F5E` (rose)
+- **tablePrefix**: `habits_`
 
 ## Database schema
 
-`db/schema.ts` — define Drizzle tables here. Table names must start with `habits_`.
+`db/schema.ts` — two tables:
+
+### `habits_habits`
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | text | cuid2, primary key |
+| `name` | text | habit name, default empty string |
+| `description` | text | default empty string |
+| `color` | text | hex color, default `#F43F5E` |
+| `created_at` | timestamp | auto-set on insert |
+| `updated_at` | timestamp | auto-set on insert |
+
+### `habits_entries`
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | text | cuid2, primary key |
+| `habit_id` | text | foreign key to habits |
+| `date` | text | ISO date string (e.g. `2025-01-15`) |
+| `completed` | boolean | default false |
+| `created_at` | timestamp | auto-set on insert |
 
 ## UI routes
 
 Pages live in `app/apps/habits/`:
-- `page.tsx` — main list/home view
-- `actions.ts` — `'use server'` CRUD server actions
-- `[id]/page.tsx` — detail/edit view (add if needed)
+- `/` (rewritten from `habits.localhost:3000`) → `page.tsx` — habit list + create form + streak display
+- `/[id]` → `[id]/page.tsx` — habit detail + entry log
 
-## Next steps to complete setup
-
-1. Edit `manifest.ts` — set icon, color, description
-2. Add import to `app/manifest.ts` registry
-3. Add to `app/apps/hub/page.tsx` apps array
-4. Define schema in `db/schema.ts`
-5. Run `pnpm db:setup`
-6. Run `pnpm generate-icons --app habits --input <1024px.png>`
-7. Implement `app/apps/habits/page.tsx` and `actions.ts`
+Server actions in `app/apps/habits/actions.ts`: `createHabit`, `updateHabit`, `deleteHabit`, `toggleEntry`.
