@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { getDb } from '@hub/db'
 import { habits, entries } from '../../../apps/habits/db/schema'
 import { eq, and } from 'drizzle-orm'
@@ -37,6 +38,7 @@ export async function updateHabit(id: string, formData: FormData) {
 
   revalidatePath('/apps/habits')
   revalidatePath(`/apps/habits/${id}`)
+  redirect('/apps/habits')
 }
 
 export async function deleteHabit(id: string) {
@@ -44,6 +46,7 @@ export async function deleteHabit(id: string) {
   await db.delete(entries).where(eq(entries.habitId, id))
   await db.delete(habits).where(eq(habits.id, id))
   revalidatePath('/apps/habits')
+  redirect('/apps/habits')
 }
 
 export async function toggleEntry(habitId: string, date: string) {

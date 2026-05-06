@@ -1,6 +1,11 @@
 <div align="center">
 
-# 🧩 AppAtelier
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/logo.png">
+  <img src="screenshots/logo.png" alt="AppAtelier" width="140" />
+</picture>
+
+# AppAtelier
 
 **Build your own private app store. One repo, one deploy, infinite installable PWAs — described in plain language to a team of AI agents.**
 
@@ -22,6 +27,22 @@
 AppAtelier is a clonable Next.js template that turns plain-language briefs into installable PWAs. You get a **launcher** at `yourdomain.com`, a **PWA per app** at its own subdomain (`notes.yourdomain.com`, `fitness.yourdomain.com`), and an **AI studio** of 12 specialized Claude agents that scaffolds, builds, themes, and deploys each app from your description.
 
 One repo. One Vercel project. One wildcard DNS record. Every app you'll ever create — automatically live at its subdomain. Built for an audience of one: you.
+
+---
+
+## Preview
+
+<p align="center">
+  <img src="screenshots/hub.png" alt="AppAtelier Hub — web launcher showing all your installed PWAs as an icon grid" width="90%" />
+</p>
+
+<p align="center">
+  <img src="screenshots/tasks.png" alt="Tasks PWA — task manager app with priorities and due dates" width="45%" />
+  &nbsp;&nbsp;
+  <img src="screenshots/habits.png" alt="Habits PWA — habit tracker with daily streak counting" width="45%" />
+</p>
+
+*The hub (top) shows your launcher at `yourdomain.com`. Below: Tasks and Habits — two of the four included example PWAs, each at its own subdomain and individually installable. All shown on mobile where they're designed to be installed and used.*
 
 ---
 

@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { getDb } from '@hub/db'
 import { tasks } from '../../../apps/tasks/db/schema'
 import { eq, sql } from 'drizzle-orm'
@@ -55,10 +56,12 @@ export async function updateTask(id: string, formData: FormData) {
 
   revalidatePath('/apps/tasks')
   revalidatePath(`/apps/tasks/${id}`)
+  redirect('/apps/tasks')
 }
 
 export async function deleteTask(id: string) {
   const db = getDb()
   await db.delete(tasks).where(eq(tasks.id, id))
   revalidatePath('/apps/tasks')
+  redirect('/apps/tasks')
 }

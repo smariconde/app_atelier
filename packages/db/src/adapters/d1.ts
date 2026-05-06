@@ -1,10 +1,8 @@
 /// <reference types="@cloudflare/workers-types" />
-import { drizzle } from 'drizzle-orm/d1'
 
-// D1 requires the CF Worker binding passed per-request (from CF Pages/Worker env).
-// In a Next.js on Cloudflare Pages context, set globalThis.__D1_BINDING__ = env.DB
-// in your CF Pages Function entry point before calling the Next.js handler.
 export function getDb(d1Binding?: D1Database) {
+  const { drizzle } = require('drizzle-orm/d1') as typeof import('drizzle-orm/d1')
+
   const binding =
     d1Binding ?? (globalThis as unknown as { __D1_BINDING__?: D1Database }).__D1_BINDING__
   if (!binding) {

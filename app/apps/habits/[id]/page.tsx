@@ -58,7 +58,7 @@ export default async function HabitPage({ params }: { params: Promise<{ id: stri
     <AppContainer>
       <PageHeader backHref="/apps/habits" />
 
-      <form action={updateHabitWithId} className="space-y-4" id="edit-form">
+      <form action={updateHabitWithId} className="space-y-4">
         <div
           className="w-4 h-4 rounded-full"
           style={{ backgroundColor: habit.color }}
@@ -107,22 +107,21 @@ export default async function HabitPage({ params }: { params: Promise<{ id: stri
             ))}
           </div>
         </div>
-      </form>
 
-      <div className="flex items-center justify-between pt-4 border-t border-zinc-800 mt-4">
-        <DeleteButton
-          formAction={deleteHabit.bind(null, id)}
-          confirmMessage="Delete this habit and all its entries?"
-        />
-        <button
-          type="submit"
-          form="edit-form"
-          className="text-zinc-950 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors hover:opacity-90"
-          style={{ backgroundColor: habit.color }}
-        >
-          Save
-        </button>
-      </div>
+        <div className="flex items-center justify-between pt-4 border-t border-zinc-800 mt-4">
+          <DeleteButton
+            formAction={deleteHabit.bind(null, id)}
+            confirmMessage="Delete this habit and all its entries?"
+          />
+          <button
+            type="submit"
+            className="text-zinc-950 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors hover:opacity-90"
+            style={{ backgroundColor: habit.color }}
+          >
+            Save
+          </button>
+        </div>
+      </form>
     </AppContainer>
   )
 }

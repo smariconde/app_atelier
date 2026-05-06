@@ -206,7 +206,7 @@ import { createId } from '@paralleldrive/cuid2'
 
 // Next.js
 import { revalidatePath } from 'next/cache'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 
 // UI — always use the barrel import, never sub-paths

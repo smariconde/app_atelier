@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { getDb } from '@hub/db'
 import { notes } from '../../../apps/notes/db/schema'
 import { eq } from 'drizzle-orm'
@@ -34,10 +35,12 @@ export async function updateNote(id: string, formData: FormData) {
 
   revalidatePath('/apps/notes')
   revalidatePath(`/apps/notes/${id}`)
+  redirect('/apps/notes')
 }
 
 export async function deleteNote(id: string) {
   const db = getDb()
   await db.delete(notes).where(eq(notes.id, id))
   revalidatePath('/apps/notes')
+  redirect('/apps/notes')
 }

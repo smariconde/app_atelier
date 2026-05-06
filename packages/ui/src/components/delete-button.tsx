@@ -14,16 +14,15 @@ export function DeleteButton({
   label = 'Delete',
 }: DeleteButtonProps) {
   return (
-    <form action={formAction}>
-      <button
-        type="submit"
-        className="text-red-500 hover:text-red-400 text-sm transition-colors"
-        onClick={(e) => {
-          if (!confirm(confirmMessage)) e.preventDefault()
-        }}
-      >
-        {label}
-      </button>
-    </form>
+    <button
+      type="submit"
+      formAction={formAction}
+      className="text-red-500 hover:text-red-400 text-sm transition-colors"
+      onClick={(e) => {
+        if (!confirm(confirmMessage)) e.preventDefault()
+      }}
+    >
+      {label}
+    </button>
   )
 }
