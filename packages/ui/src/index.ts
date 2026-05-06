@@ -38,3 +38,5 @@ export type { PageHeaderProps } from './components/page-header'
 
 export { DeleteButton } from './components/delete-button'
 export type { DeleteButtonProps } from './components/delete-button'
+
+export { BackToHub } from './components/back-to-hub'
