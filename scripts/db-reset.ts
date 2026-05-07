@@ -15,7 +15,7 @@ if ((adapter === 'postgres' || adapter === 'mysql') && !force) {
   process.exit(1)
 }
 
-if (adapter === 'sqlite' || adapter === 'd1') {
+if (adapter === 'sqlite') {
   const dbPath = path.resolve(process.env.DATABASE_URL ?? './local.db')
   for (const suffix of ['', '-wal', '-shm']) {
     const p = dbPath + suffix
@@ -25,7 +25,6 @@ if (adapter === 'sqlite' || adapter === 'd1') {
     }
   }
 } else {
-  // For postgres/mysql/turso: drop all app tables via drizzle-kit drop
   console.log(`Dropping all tables (adapter: ${adapter})...`)
   execSync('pnpm drizzle-kit drop --force', { stdio: 'inherit' })
 }

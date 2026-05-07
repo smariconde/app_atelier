@@ -38,7 +38,7 @@ DB_ADAPTER=sqlite
 DATABASE_URL=./local.db
 
 # Better Auth secret (generate a random string)
-AUTH_SECRET=your-random-secret-here
+BETTER_AUTH_SECRET=your-random-secret-here
 
 # Required only for AI features (MCP apps like Daily Briefing)
 ANTHROPIC_API_KEY=sk-ant-...

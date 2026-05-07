@@ -65,8 +65,10 @@ Vercel config is in `vercel.json` at the repo root — it is already set up for 
 | `DB_ADAPTER` | yes | `turso`, `postgres`, `mysql`, or `d1`. Not `sqlite` (serverless filesystem is ephemeral). |
 | `DATABASE_URL` | yes | Connection string for your chosen adapter. |
 | `DATABASE_AUTH_TOKEN` | if Turso | Turso auth token. |
-| `AUTH_SECRET` | yes | Secret for Better Auth session cookies. Generate with `openssl rand -base64 32`. |
-| `AUTH_URL` | yes | Your production URL: `https://yourdomain.com`. |
+| `BETTER_AUTH_SECRET` | yes | Secret for Better Auth session cookies. Generate with `openssl rand -base64 32`. |
+| `BETTER_AUTH_URL` | yes | Your production URL: `https://yourdomain.com`. |
+| `COOKIE_DOMAIN` | yes | Cookie domain for cross-subdomain SSO: `.yourdomain.com`. |
+| `NEXT_PUBLIC_DOMAIN` | yes | Your production domain: `yourdomain.com`. Used for cross-app links and the hub launcher. |
 | `ANTHROPIC_API_KEY` | if AI used | Required for any app with MCP or AI features. |
 | `GOOGLE_MCP_URL` | if gmail/calendar/drive | Google Workspace MCP endpoint. |
 | `GOOGLE_MCP_TOKEN` | if gmail/calendar/drive | Google OAuth token. |
