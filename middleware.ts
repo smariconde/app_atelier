@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+const KNOWN_APPS = ['notes', 'tasks', 'habits', 'daily-briefing']
+
 export function middleware(request: NextRequest) {
   const host = request.headers.get('host') ?? ''
   const pathname = request.nextUrl.pathname
@@ -12,17 +14,17 @@ export function middleware(request: NextRequest) {
   if (hostname === 'localhost') {
     subdomain = null
   } else if (hostname.endsWith('.localhost')) {
-    subdomain = parts[0]  // 'notes' from 'notes.localhost'
+    subdomain = parts[0]
   } else if (parts.length === 2) {
-    subdomain = null       // 'yourdomain.com' → hub
-  } else if (parts.length >= 3) {
-    subdomain = parts[0]   // 'notes.yourdomain.com' → 'notes'
+    subdomain = null
+  } else {
+    const candidate = parts[0]
+    subdomain = KNOWN_APPS.includes(candidate) ? candidate : null
   }
 
   const appPath = subdomain ? `/apps/${subdomain}` : '/apps/hub'
   const url = request.nextUrl.clone()
 
-  // Avoid double-prefixing if already routed
   if (!pathname.startsWith('/apps/')) {
     url.pathname = appPath + pathname
     return NextResponse.rewrite(url)
@@ -33,6 +35,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|icon|apple-icon|app-icon|.*\\.(?:png|jpg|svg|ico|webmanifest)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|icon|apple-icon|app-icon|.*\\.(?:png|jpg|svg|ico|js|webmanifest)$).*)',
   ],
 }
